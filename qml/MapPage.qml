@@ -50,17 +50,23 @@ Page {
 	width: parent.width 
 	height: parent.height   
 	
-	Plugin {
-		id: mapplugin
-        name: "openstreetmap"
-        parameters: [
-            PluginParameter {name: "mapping.servers";
-                value: ["http://a.tile.cloudmade.com/860eebc2982443f0ad9ab74669f07dc0/74884/256/",
-                    "http://b.tile.cloudmade.com/860eebc2982443f0ad9ab74669f07dc0/74884/256/",
-                    "http://c.tile.cloudmade.com/860eebc2982443f0ad9ab74669f07dc0/74884/256/"
-                ]
-            }
-        ]
+    Plugin {
+    id: mapplugin
+    name: "openstreetmap"
+    parameters: [
+          PluginParameter {name: "mapping.servers";
+             value: ["http://a.tile.cloudmade.com/f3f2cbe6a0c34bf8981a5be8426333a8/74884/256/",
+                 "http://b.tile.cloudmade.com/f3f2cbe6a0c34bf8981a5be8426333a8/74884/256/",
+                 "http://c.tile.cloudmade.com/f3f2cbe6a0c34bf8981a5be8426333a8/74884/256/"
+              ]
+          },
+          PluginParameter {name: "mapping.cache.directory"
+                  value: "/home/user/MyDocs/.maps/GPS-Logger/"
+          },
+          PluginParameter {name: "mapping.cache.size"
+                  value: 2147483648
+          }
+       ]
     }
 	  
 	/*Item {
