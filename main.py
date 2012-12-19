@@ -244,7 +244,7 @@ def add_entry(lon, lat, alt, speed):
       alt ="0"
     
     
-    t = str(tt[0]) + "-" + str(mm) + "-" + str(d) + "T" + str(h) + ":" + str(h) + ":" + str(s) + "Z" #2012-07-31T20:44:36Z
+    t = str(tt[0]) + "-" + str(mm) + "-" + str(d) + "T" + str(h) + ":" + str(m) + ":" + str(s) + "Z" #2012-07-31T20:44:36Z
     s = speed * 3.6
     print t, lat, lon, alt, s
     txt = "		<trkpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
