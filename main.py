@@ -39,7 +39,7 @@ class Data():
   configpath = ""
   configfile = "config.conf"
   opt_in = False
-  
+  waypoints = ""
 
 
 ####################################################################################################
@@ -120,7 +120,7 @@ class QML_to_Python_Interface(QObject):
     #print "recording", lon, lat, alt, speed, time
     add_entry(lon, lat, alt, speed)
     
-  @Slot(float, float, float, float, str)
+  @Slot(float, float, float, float, int)
   def add_waypoint(self, lon, lat, alt, speed, waypoint):
     #print "recording", lon, lat, alt, speed, time
     add_waypoint(lon, lat, alt, speed, waypoint)
@@ -155,14 +155,12 @@ def start_recording(filename, interval):
   suffix = 1
   filename2 = filename + ".gpx" #try first without a suffix
   full_filename = data.path + "/" + filename2
-    
+
   if(os.path.exists(full_filename)):
     while(os.path.exists(full_filename)):
       filename2 = filename + "_" + str(suffix) + ".gpx"
       full_filename = data.path + "/" + filename2
       suffix = suffix + 1
-  
-  
   print "Start recording", full_filename, interval
   try:
     data.filehandle = open(full_filename, 'w')
@@ -184,7 +182,9 @@ def start_recording(filename, interval):
     "<name>" + str(filename) + "</name>\n" + \
     "		<trkseg>\n"
     data.filehandle.write(txt)
-    
+
+    data.waypoints = ""
+
     return filename2
      
   except:
@@ -192,59 +192,45 @@ def start_recording(filename, interval):
     return ""
   
 
-
-
+def get_iso_datetime():
+  tt = datetime.utcnow().timetuple() #time in UTC
+  #add leading zeros
+  if(int(tt[1])<10):
+    mm = "0" + str(tt[1])
+  else:
+    mm = str(tt[1])
+  if(int(tt[2])<10):
+    d = "0" + str(tt[2])
+  else:
+    d = str(tt[2])
+  if(int(tt[3])<10):
+    h = "0" + str(tt[3])
+  else:
+    h = str(tt[3])
+  if(int(tt[4])<10):
+    m = "0" + str(tt[4])
+  else:
+    m = str(tt[4])
+  if(int(tt[5])<10):
+    s = "0" + str(tt[5])
+  else:
+    s = str(tt[5])
+  t = str(tt[0]) + "-" + str(mm) + "-" + str(d) + "T" + str(h) + ":" + str(m) + ":" + str(s) + "Z" #2012-07-31T20:44:36Z
+  return t
 
 
 def add_entry(lon, lat, alt, speed):
   global data
   if(data.recording == True):    
     #print "adding entry"
-    
-    tt = datetime.utcnow().timetuple() #time in UTC
-    #print tt
-        
-    #dt = datetime.strptime(time[:24], "%a %b %d %Y %H:%M:%S")
-    #tt = dt.timetuple()
-    #tm_year=2012, tm_mon=8, tm_mday=16, tm_hour=23, tm_min=11, tm_sec=49, tm_wday=3, tm_yday=229, tm_isdst=-1   
-    
-    #time = datetime(yyyy, mm, dd, hh, mm, ss).isoformat(' ')
-    #time = datetime(tt[0], tt[1], tt[2], tt[3], tt[4], tt[5], ).isoformat(' ')
-    #>Todo: add milliseconds
-    
-    #add leading zeros
-    if(int(tt[1])<10): 
-      mm = "0" + str(tt[1])
-    else:
-      mm = str(tt[1])
-      
-    if(int(tt[2])<10): 
-      d = "0" + str(tt[2])
-    else:
-      d = str(tt[2])
-      
-    if(int(tt[3])<10): 
-      h = "0" + str(tt[3])
-    else:
-      h = str(tt[3])
-      
-    if(int(tt[4])<10): 
-      m = "0" + str(tt[4])
-    else:
-      m = str(tt[4])
-      
-    if(int(tt[5])<10): 
-      s = "0" + str(tt[5])
-    else:
-      s = str(tt[5])
-      
+
     try:
       alt = str(int(alt))
     except:
       alt ="0"
     
-    
-    t = str(tt[0]) + "-" + str(mm) + "-" + str(d) + "T" + str(h) + ":" + str(m) + ":" + str(s) + "Z" #2012-07-31T20:44:36Z
+
+    t = get_iso_datetime();
     s = speed * 3.6
     print t, lat, lon, alt, s
     txt = "		<trkpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
@@ -257,28 +243,23 @@ def add_entry(lon, lat, alt, speed):
   else:
     print "file closed, can not add entry"
     
-    
-    
    
 def add_waypoint(lon, lat, alt, speed, waypoint): 
   #global data
-  #if(data.recording == True):    
-    #print "adding waypoint"
+  if(data.recording == True):
+    print "adding waypoint"
     
-    #tt = datetime.utcnow().timetuple() #time in UTC
-    ##>Todo: add milliseconds
-    #t = str(tt[0]) + "-" + str(tt[1]) + "-" + str(tt[2]) + "T" + str(tt[3]) + ":" + str(tt[4]) + ":" + str(tt[5]) + "Z" #2012-07-31T20:44:36Z
+    t = get_iso_datetime()
     ##print t
-    #txt = "		<trkpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
-    #"			<ele>" + str(int(alt)) + "</ele>\n" + \
-    #"			<time>" + str(t) + "</time>\n" + \
-    #"		</trkpt>\n"
-    
-    #data.filehandle.write(txt)
-  #else:
-    #print "file closed, can not add entry"
-    print "waypoint support is not yet implemented"
+    txt = "  <wpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
+    "    <ele>" + str(int(alt)) + "</ele>\n" + \
+    "    <time>" + str(t) + "</time>\n" + \
+    "    <name>" + str(waypoint) + "</name>\n" + \
+    "  </wpt>\n"
 
+    data.waypoints += txt
+  else:
+    print "file closed, can not add entry"
 
 
 def stop_recording():
@@ -288,10 +269,11 @@ def stop_recording():
     txt = '''\
     </trkseg>
   </trk>
-</gpx>
 '''
     data.filehandle.write(txt)
-  
+    data.filehandle.write(data.waypoints)
+    data.filehandle.write("\n</gpx>")
+
   try:
       data.filehandle.close()
       data.recording = False

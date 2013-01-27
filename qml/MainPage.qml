@@ -389,7 +389,7 @@ Page {
 				if(r != ""){ //ok
 				  bstart.enabled = false
 				  bstop.enabled = true
-// 				  bwaypoint.enabled = true
+				  bwaypoint.enabled = true
 				  txtname.enabled = false
 				  binterval.enabled = false
 				  //timerrecord.interval = slinterval.value * 1000
@@ -400,6 +400,7 @@ Page {
 				  points = 0
 				  waypoint = 0
 				  mapPage.remove_all_point()
+				  bwaypoint.text = " Add waypoint (" + waypoint + ")"
 				}
 				else{ //failed
 				  console.log("start failed")
@@ -423,22 +424,22 @@ Page {
 			
 		    }
 		    
-// 		    Row{
-// 			width: parent.width
-// 			Button{	
-// 			    id: bwaypoint
-// 			    text: "Add waypoint"
-// 			    font.bold: true;
-// 			    font.pixelSize: 26
-// 			    width: parent.width -20
-// 			    enabled: false
-// 			    onClicked: {
-// 			      waypoint = waypoint + 1
-// 			      bwaypoint = " Add waypoint (" + waypoint + ")"
-// 			      qml_to_python.addwaypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
-// 			    }
-// 			}		 
-// 		    }
+            Row{
+            width: parent.width
+            Button{
+                id: bwaypoint
+                text: "Add waypoint"
+                font.bold: true;
+                font.pixelSize: 26
+                width: parent.width -20
+                enabled: false
+                onClicked: {
+                  waypoint = waypoint + 1
+                  bwaypoint.text = " Add waypoint (" + waypoint + ")"
+                  qml_to_python.add_waypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
+                }
+            }
+            }
 		    
 		    Row{
 			width: parent.width
@@ -471,7 +472,7 @@ Page {
 	  //console.log("stop")
 	  bstart.enabled = true
 	  bstop.enabled = false
-// 	  bwaypoint.enabled = false
+      bwaypoint.enabled = false
 	  txtname.enabled = true
 	  binterval.enabled = true
 	  txtname.visible = true
