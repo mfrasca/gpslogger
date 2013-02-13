@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 ##############################################################################################
 # Copyright (c) by George Ruinelli 
 # License: 	GPL3
+# Modified by Hiroshi Miura, 2013
 ##############################################################################################
-
 
 import sys
 from PySide.QtCore import *
@@ -20,14 +20,8 @@ import string
 import ConfigParser
 #import gconf
 
-
 from datetime import tzinfo, timedelta, datetime
-
-print ""
-
-
-
-
+import logging
 
 class Data():
   root = "/opt/gps-logger/"
@@ -41,112 +35,81 @@ class Data():
   opt_in = False
   waypoints = ""
 
-
-####################################################################################################
+################################################################################
 class Configuration():
-    def __init__(self):
-	data.configpath = os.path.join(QDS.storageLocation(QDS.DataLocation), "GPS-Logger")
-	data.configfile = data.configpath + "/" + data.configfile
+  def __init__(self):
+    data.configpath = os.path.join(QDS.storageLocation(QDS.DataLocation), "GPS-Logger")
+    data.configfile = data.configpath + "/" + data.configfile
   
-	  
-    def Load(self):
-	print "Loading configuration from:", data.configfile
-	self.ConfigParser = ConfigParser.SafeConfigParser()
-	try:
-	    self.ConfigParser.read(data.configfile)
-	except: #use default config
-	    print "Configuration file "+ data.configfile + " not existing or not compatible"
-
-	try:
-	    self.ConfigParser.add_section('main')
-	except:
-	    pass
-
-	try:
-	    data.opt_in = self.ConfigParser.getboolean("main", "opt_in")  	    
-	    print "Configuration loaded"  
-	except:
-	    print "Error loading configuration, using default value"
+  def Load(self):
+    logging.info("Loading configuration from:", data.configfile)
+    self.ConfigParser = ConfigParser.SafeConfigParser()
+    try:
+      self.ConfigParser.read(data.configfile)
+    except: #use default config
+      logging.warning("Configuration file "+ data.configfile + " not existing or not compatible")
+    try:
+      self.ConfigParser.add_section('main')
+    except:
+      pass
+    try:
+      data.opt_in = self.ConfigParser.getboolean("main", "opt_in")
+      logging.info("Configuration loaded")
+    except:
+      logging.warning("Error loading configuration, using default value")
   
+  def Write(self):
+    logging.info("Write configuration to:", data.configfile)
+    #self.ConfigParser.add_section('main')
+    self.ConfigParser.set('main', 'opt_in', str(data.opt_in))
+    try:
+      os.makedirs(data.configpath)
+    except:
+      pass
+    try:
+      handle = open(data.configfile, 'w')
+      self.ConfigParser.write(handle)
+      handle.close()
+      logging.info("Configuration saved")
+    except:
+      logging.warning("Failed to write configuration file!")
 
-	
-    
-    
-    
-    
-    
-    def Write(self):
-	print "Write configuration to:", data.configfile  
-	
-	#self.ConfigParser.add_section('main')
-		  
-	self.ConfigParser.set('main', 'opt_in', str(data.opt_in))
-
-	try:
-	    os.makedirs(data.configpath)
-	except:
-	  pass
-
-	try:
-	    handle = open(data.configfile, 'w')
-	    self.ConfigParser.write(handle)
-	    handle.close()
-	    print "Configuration saved"
-	except:
-	    print "Failed to write configuration file!"
-
-
-################################################################################################  
-  
-
-  
-    
-####################################################################################################
-
+################################################################################
 class QML_to_Python_Interface(QObject):
   global data
-  
+
   @Slot(str, int, result=str)
   def start(self, filename, interval):
     return start_recording(filename, interval)
-      
+
   @Slot()
   def stop(self):
-    #print "stop"
+    logging.debug("stop")
     stop_recording()
       
   @Slot(float, float, float, float)
   def add_point(self, lon, lat, alt, speed):
-    #print "recording", lon, lat, alt, speed, time
+    logging.debug("recording", lon, lat, alt, speed, time)
     add_entry(lon, lat, alt, speed)
     
   @Slot(float, float, float, float, int)
   def add_waypoint(self, lon, lat, alt, speed, waypoint):
-    #print "recording", lon, lat, alt, speed, time
+    logging.debug("recording", lon, lat, alt, speed, time)
     add_waypoint(lon, lat, alt, speed, waypoint)
-      
+
   @Slot(result=str)
   def get_version(self):      
     return str(data.version) + "-" + str(data.build)
-  
-  
+
   @Slot(bool)
   def Opt_In(self, v):      
     data.opt_in = v
     if(v == False):
-	config.Write()
-	print "We have to quit now, sry"
-        quit()
-  
-      
-
+      config.Write()
+      logging.info("We have to quit now, sry")
+      quit()
 	
 ################################################################################################  
-
-
-
-
-
 def start_recording(filename, interval):
   global data
   if(filename == ""):
@@ -161,11 +124,10 @@ def start_recording(filename, interval):
       filename2 = filename + "_" + str(suffix) + ".gpx"
       full_filename = data.path + "/" + filename2
       suffix = suffix + 1
-  print "Start recording", full_filename, interval
+  logging.info("Start recording", full_filename, interval)
   try:
     data.filehandle = open(full_filename, 'w')
     data.recording = True
-    
     data.filehandle.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n")
     txt = '''\
 <gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance" creator="N9 GPS Logger" version="1.1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n'''
@@ -182,16 +144,13 @@ def start_recording(filename, interval):
     "<name>" + str(filename) + "</name>\n" + \
     "		<trkseg>\n"
     data.filehandle.write(txt)
-
     data.waypoints = ""
-
     return filename2
-     
   except:
-    print "failed to open file:", full_filename
+    logging.warning("failed to open file:", full_filename)
     return ""
-  
 
+################################################################################################
 def get_iso_datetime():
   tt = datetime.utcnow().timetuple() #time in UTC
   #add leading zeros
@@ -218,53 +177,47 @@ def get_iso_datetime():
   t = str(tt[0]) + "-" + str(mm) + "-" + str(d) + "T" + str(h) + ":" + str(m) + ":" + str(s) + "Z" #2012-07-31T20:44:36Z
   return t
 
-
+################################################################################################
 def add_entry(lon, lat, alt, speed):
   global data
   if(data.recording == True):    
-    #print "adding entry"
-
+    logging.debug("adding entry")
     try:
       alt = str(int(alt))
     except:
       alt ="0"
-    
 
     t = get_iso_datetime();
     s = speed * 3.6
-    print t, lat, lon, alt, s
+    logging.debug("trk:%s,%f,%f,%f,%f", t, lat, lon, alt, s)
     txt = "		<trkpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
     "			<ele>" + str(int(alt)) + "</ele>\n" + \
     "			<time>" + t + "</time>\n" + \
     "			<desc>Lat.=" + str(lat) + ", Long.=" + str(lon) + ", Alt.=" + str(alt) + "m, Speed=" + str(s) + "Km/h</desc>\n" + \
     "		</trkpt>\n"
-    
     data.filehandle.write(txt)
   else:
-    print "file closed, can not add entry"
-    
-   
+    logging.warning("file closed, can not add entry")
+
+################################################################################################
 def add_waypoint(lon, lat, alt, speed, waypoint): 
-  #global data
+  global data
   if(data.recording == True):
-    print "adding waypoint"
-    
+    loging.debug("adding waypoint")
     t = get_iso_datetime()
-    ##print t
     txt = "  <wpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
     "    <ele>" + str(int(alt)) + "</ele>\n" + \
     "    <time>" + str(t) + "</time>\n" + \
     "    <name>" + str(waypoint) + "</name>\n" + \
     "  </wpt>\n"
-
     data.waypoints += txt
   else:
-    print "file closed, can not add entry"
+    logging.warning("file closed, can not add entry")
 
-
+################################################################################################
 def stop_recording():
   global data
-  print "Stop recording"
+  logging.debug("Stop recording")
   if(data.recording == True): 
     txt = '''\
     </trkseg>
@@ -273,55 +226,31 @@ def stop_recording():
     data.filehandle.write(txt)
     data.filehandle.write(data.waypoints)
     data.filehandle.write("\n</gpx>")
-
   try:
-      data.filehandle.close()
-      data.recording = False
+    data.filehandle.close()
+    data.recording = False
   except:
-      pass
-    
-    
+    pass
 
-
-    
-    
-    
-
+################################################################################################
 if __name__ == '__main__':
   global data
   app = QApplication(sys.argv)
-  
+  logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
   data = Data()
-     
   
   if(platform.machine().startswith('arm')):
     pass
   else:
     data.root = "./"
     data.path = "./data/"
-    
-  #print ""
-  #print ""
-  #print ""
-  #print ""
-  #print ""
-  #print "######################### TESTING, PLEASE REMOVE TEST LINE ##########################"
-  #print ""
-  #print ""
-  #print ""
-  #print ""
-  #data.root = "./" #testing
 
-  
   config = Configuration()
   config.Load()
-      
-    
+
   view = QDeclarativeView()
   view.setSource(QUrl.fromLocalFile(data.root + 'qml/main.qml'))
   root = view.rootObject()
-  
-      
       
   #Load version file
   try:
@@ -329,46 +258,37 @@ if __name__ == '__main__':
     data.version = file.readline()
     data.version=data.version[:-1]
     data.build = file.readline()
-    print "Version: "+str(data.version)+ "-"+str(data.build)
+    logging.info("Version: "+str(data.version)+ "-"+str(data.build))
   except:
-    print "Version file not found, please check your installation!"
-  
-  
-  
+    logging.warning("Version file not found, please check your installation!")
+
   #root.setQMLData(data.showHomeNetwork, data.useautoreset, data.resetday, data.usedifference, data.difference)
 
   try:
     os.makedirs(data.path)
   except:
     pass
-      
-      
 
   #Those lines has to be run AFTER the above root.-commands, else the dummy values in QML will overwrite our real values!
   # instantiate the Python object
   qml_to_python = QML_to_Python_Interface()
+
   # expose the object to QML
   context = view.rootContext()
   context.setContextProperty("qml_to_python", qml_to_python)
-  
-  
-  if(platform.machine().startswith('arm')): view.showFullScreen()
-  view.show()
-	  
-  print "data.opt_in:", data.opt_in
-  if(data.opt_in == False):
+
+  if(platform.machine().startswith('arm')):
+    view.showFullScreen()
+    view.show()
+    logging.info("data.opt_in:", data.opt_in)
+    if(data.opt_in == False):
       root.show_Opt_In()
-      
-  
+
   app.exec_() #endless loop
-      
 
   config.Write()
-  
-  print "Closing"
-  
   if(data.recording == True):
-    print "we are still recording, close file properly"
+    logging.info("we are still recording, close file properly")
     stop_recording()
-  
-  
+  logging.debug("Closing")
+
