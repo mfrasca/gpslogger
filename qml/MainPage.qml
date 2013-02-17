@@ -79,7 +79,7 @@ Page {
     
     
     property int points: 0
-    property int waypoint: 0
+    property int waypoint: 1
     
 //     property variant mapPage: ""
     
@@ -396,7 +396,7 @@ Page {
 				  points = 0
 				  waypoint = 0
 				  mapPage.remove_all_point()
-				  bwaypoint.text = " Add waypoint (No." + (waypoint + 1) + ")"
+				  bwaypoint.text = " Add waypoint (No." + waypoint + ")"
 				}
 				else{ //failed
 				  console.log("start failed")
@@ -430,9 +430,9 @@ Page {
                 width: parent.width -20
                 enabled: false
                 onClicked: {
+                  gpslogger.add_waypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
                   waypoint = waypoint + 1
                   bwaypoint.text = " Add waypoint (" + waypoint + ")"
-                  gpslogger.add_waypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
                 }
             }
             }
