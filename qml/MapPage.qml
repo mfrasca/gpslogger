@@ -90,7 +90,7 @@ Page {
 		coord1 = map.toCoordinate(Qt.point(-map.anchors.leftMargin,-map.anchors.topMargin))
 		coord2 = map.toCoordinate(Qt.point(map.size.width + map.anchors.rightMargin,-map.anchors.topMargin))
 		dist = Math.round(coord1.distanceTo(coord2))
-		console.log(dist, dist/map.size.width)
+		//console.log(dist, dist/map.size.width)
 		meter_per_pixel = dist/map.size.width
 	    }
 
