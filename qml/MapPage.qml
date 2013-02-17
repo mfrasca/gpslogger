@@ -5,10 +5,8 @@ import QtMobility.location 1.1
 
 
 Page {
-  
   property double meter_per_pixel: 0
-    
-  
+
   function centermyposition(){ //sets my position, but only once (do not update automatically)
       var coord = Qt.createQmlObject('import QtMobility.location 1.1; Coordinate{latitude:' + positionSource.position.coordinate.latitude + ';longitude:' + positionSource.position.coordinate.longitude + ';}', positionSource, "coord");
       map.center = coord;
@@ -42,9 +40,6 @@ Page {
     id: mapPage
     tools: toolbar
 
-//     anchors.margins: 10
-
-
     Item{
 	id: page
 	width: parent.width 
@@ -68,42 +63,6 @@ Page {
           }
        ]
     }
-	  
-	/*Item {
-	  id: titlebar
-	    width: parent.width
-	    height: 70
-
-	    Rectangle {
-		anchors.fill: parent
-		color: "green";
-	    }
-	    //Row{
-	      Image {
-		  id: imggps
-		  source: "../img/gps_256.png"
-		  width: 62
-		  height: 62
-	      }
-	      
-	      Label {
-		  anchors {
-		      left: imggps.right
-		      leftMargin: 10
-		      verticalCenter: parent.verticalCenter
-		      top: parent.top
-		      topMargin: 20
-		  }
-		  font.bold: true;
-		  font.pixelSize: 32
-		  color: "White"
-
-		  text: "GPS-Logger"
-	      }
-	   // }
-	}*/
-
-
 
 	Item {
 	    id: myMapRoot
@@ -133,7 +92,6 @@ Page {
 		dist = Math.round(coord1.distanceTo(coord2))
 		console.log(dist, dist/map.size.width)
 		meter_per_pixel = dist/map.size.width
-// 		myPosition.radius = meter_per_pixel*20
 	    }
 
 	    Map {
@@ -166,14 +124,6 @@ Page {
 		    center: positionSource.position.coordinate
 		    z: 100
 		}
-		/*Landmark {
-		    id: myLandmark
-		    name: "my Position"
-// 		    iconSource: "../img/icon_80.png"
-		    iconSource: "toolbar-back"
-		    coordinate: positionSource.position.coordinate
-		    radius: meter_per_pixel*15
-		}*/
 		
 		MapPolyline {
 		    id: polyline
@@ -181,8 +131,6 @@ Page {
 		    z: 50
 		}
 	    }
-	    
-
 
 	    Flickable {
 		id: flickable
@@ -216,27 +164,6 @@ Page {
 		    prevY = contentY
 		}
 	    }
-	    /*Button {
-		id: plus
-		text: "+"
-	    }
-	    Button {
-		id: minus
-		text: "-"
-		anchors.right: plus.left
-	    }*/
-	    /*MouseArea {
-		anchors.fill: plus
-		onClicked: {
-		    map.zoomLevel += 1
-		}
-	    }
-	    MouseArea {
-		anchors.fill: minus
-		onClicked: {
-		    map.zoomLevel -= 1
-		}
-	    }*/
 	    Item {
 		id: pinpointViewContainer
 		Repeater {
@@ -250,8 +177,6 @@ Page {
     }
 
 //*******************************************************
-
-
 
     ToolBarLayout {
 	id: toolbar
@@ -285,7 +210,6 @@ Page {
             }	 
 	  ToolButton {
                 id: bgotomyposition
-//                 text: "o"
 		iconSource: "../img/gps_small.png"
 		width: 100
                 onClicked: {
@@ -299,16 +223,4 @@ Page {
 	    onClicked: myMenu.open();
 	}
     }    
-   
-
-//*******************************************************
-//*******************************************************
-//     Component.onCompleted: {
-// 	//map.size.width = page.width - 20
-// //	map.size.height = map.size.width //500 //page.height - 20
-// 	console.log("MapPage loaded")
-// 	centermyposition()
-//     }
-//*******************************************************
-
 }
