@@ -252,7 +252,7 @@ class GPX():
 
   def add_waypoint(self, lon, lat, alt, speed, waypoint):
     if(self.recording == True):
-      loging.debug("adding waypoint")
+      logging.debug("adding waypoint")
       t = self._get_iso_datetime()
       txt = "  <wpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
         "    <ele>" + str(int(alt)) + "</ele>\n" + \
