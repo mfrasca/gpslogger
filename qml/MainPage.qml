@@ -44,8 +44,8 @@ Page {
     
     function sendGPSdata(){	
 	if(bstart.enabled == false){ //recording
-	    points = points + 1
-	    lblsamples.text = "recorded " + points + " samples"
+	    mainPage.points = mainPage.points + 1
+	    lblsamples.text = "recorded " + mainPage.points + " samples"
 	    gpslogger.add_point(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed)
 	    
 	    mapPage.add_point(positionSource.position.coordinate)
@@ -393,10 +393,10 @@ Page {
 				  lblname.visible = true
 				  lblname.text = r
 				  lblsamples.text = ""
-				  points = 0
-				  waypoint = 0
+				  mainPage.points = 0
+				  mainPage.waypoint = 1
+				  bwaypoint.text = "Add WayPoint(1)"
 				  mapPage.remove_all_point()
-				  bwaypoint.text = " Add waypoint (No." + waypoint + ")"
 				}
 				else{ //failed
 				  console.log("start failed")
@@ -416,34 +416,36 @@ Page {
 			    onClicked: {
 			      dialogstop.open();
 			    }
-			}			
-			
+			}
 		    }
-		    
-            Row{
-            width: parent.width
-            Button{
-                id: bwaypoint
-                text: "Add waypoint"
-                font.bold: true;
-                font.pixelSize: 26
-                width: parent.width -20
-                enabled: false
-                onClicked: {
-                  gpslogger.add_waypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
-                  waypoint = waypoint + 1
-                  bwaypoint.text = " Add waypoint (" + waypoint + ")"
-                }
-            }
-            }
-		    
 		    Row{
 			width: parent.width
-			Text{	
+			Button{
+			    id: bwaypoint
+			    text: "Add WayPoint(1)"
+			    font.bold: true;
+			    font.pixelSize: 26
+			    width: parent.width -20
+			    enabled: false
+			    onClicked: {
+				gpslogger.add_waypoint(positionSource.position.coordinate.longitude,
+				      positionSource.position.coordinate.latitude,
+				      positionSource.position.coordinate.altitude,
+				      positionSource.position.speed,
+				      mainPage.waypoint)
+				mainPage.waypoint = mainPage.waypoint + 1
+				bwaypoint.text = "Add WayPoint(" + mainPage.waypoint + ")"
+			    }
+			}
+		    }
+
+		    Row{
+			width: parent.width
+			Text{
 			    id: lblsamples
 			    font.bold: true;
 			    font.pixelSize: 22
-			}		
+			}
 		    }
 		    
 		}
