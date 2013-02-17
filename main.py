@@ -289,11 +289,9 @@ if __name__ == '__main__':
 
   # create view
   view = QDeclarativeView()
-  view.setSource(QUrl.fromLocalFile(gpslogger.rootpath + 'qml/main.qml'))
-
-  # expose the object to QML
   context = view.rootContext()
-  context.setContextProperty("gpslogger", gpslogger)
+  context.setContextProperty("gpslogger", gpslogger)# expose the object to QML
+  view.setSource(QUrl.fromLocalFile(gpslogger.rootpath + 'qml/main.qml'))
 
   if(platform.machine().startswith('arm')):
     view.showFullScreen()
