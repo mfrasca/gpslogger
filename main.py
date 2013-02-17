@@ -237,7 +237,7 @@ class GPX():
         alt = str(int(alt))
       except:
         alt ="0"
-      t = _get_iso_datetime();
+      t = self._get_iso_datetime();
       s = speed * 3.6
       logging.debug("trk:%s,%f,%f,%f,%f", t, lat, lon, alt, s)
       txt = "		<trkpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
@@ -253,7 +253,7 @@ class GPX():
   def add_waypoint(self, lon, lat, alt, speed, waypoint):
     if(self.recording == True):
       loging.debug("adding waypoint")
-      t = _get_iso_datetime()
+      t = self._get_iso_datetime()
       txt = "  <wpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
         "    <ele>" + str(int(alt)) + "</ele>\n" + \
         "    <time>" + str(t) + "</time>\n" + \
