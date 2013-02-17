@@ -70,7 +70,7 @@ class GPSLogger(QObject):
     self.config.write()
     if(self.gpx.recording == True):
       logging.info("we are still recording, close file properly")
-      self.gpx.stop_recording(gpx)
+      self.gpx.stop_recording()
     logging.debug("Closing")
 
   @Slot(str, int, result=str)
