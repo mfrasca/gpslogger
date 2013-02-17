@@ -40,7 +40,8 @@ PageStackWindow {
         message: "Version: " + qml_to_python.get_version() + "\n" +
 		 "Copyright 2012 by George Ruinelli\n"+
                  "Contact: george@ruinelli.ch\n"+
-                 "Web: www.ruinelli.ch/gps-logger"
+                 "Web: www.ruinelli.ch/gps-logger"+
+                 "Modified 2013 by Hiroshi Miura"
 	acceptButtonText: "Ok"
     }
     
