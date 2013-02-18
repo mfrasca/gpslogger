@@ -7,13 +7,9 @@ import "." as MyComponents
 
 
 Page {
-//   orientationLock: PageOrientation.LockLandscape
-//     orientationLock: PageOrientation.LockPortrait
-    
-
-    
-    
-    
+    //   orientationLock: PageOrientation.LockLandscape
+    //   orientationLock: PageOrientation.LockPortrait
+    //
     //We want to tell Python whenever our display orientation changes
     //This is done with the signal "onWidthChanged".
     //This how ever is not called at start up, because of that we also use a sigle shot timer
@@ -50,7 +46,7 @@ Page {
 	if(bstart.enabled == false){ //recording
 	    points = points + 1
 	    lblsamples.text = "recorded " + points + " samples"
-	    qml_to_python.add_point(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed)
+	    gpslogger.add_point(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed)
 	    
 	    mapPage.add_point(positionSource.position.coordinate)
 	}
@@ -83,7 +79,7 @@ Page {
     
     
     property int points: 0
-    property int waypoint: 0
+    property int waypoint: 1
     
 //     property variant mapPage: ""
     
@@ -385,11 +381,11 @@ Page {
 			    width: parent.width / 2 - 12
 			    onClicked: {
 // 				console.log("start")
-				var r = qml_to_python.start(txtname.text, timerrecord.interval)				
+				var r = gpslogger.start(txtname.text, timerrecord.interval)
 				if(r != ""){ //ok
 				  bstart.enabled = false
 				  bstop.enabled = true
-// 				  bwaypoint.enabled = true
+				  bwaypoint.enabled = true
 				  txtname.enabled = false
 				  binterval.enabled = false
 				  //timerrecord.interval = slinterval.value * 1000
@@ -400,6 +396,7 @@ Page {
 				  points = 0
 				  waypoint = 0
 				  mapPage.remove_all_point()
+				  bwaypoint.text = " Add waypoint (No." + waypoint + ")"
 				}
 				else{ //failed
 				  console.log("start failed")
@@ -423,22 +420,22 @@ Page {
 			
 		    }
 		    
-// 		    Row{
-// 			width: parent.width
-// 			Button{	
-// 			    id: bwaypoint
-// 			    text: "Add waypoint"
-// 			    font.bold: true;
-// 			    font.pixelSize: 26
-// 			    width: parent.width -20
-// 			    enabled: false
-// 			    onClicked: {
-// 			      waypoint = waypoint + 1
-// 			      bwaypoint = " Add waypoint (" + waypoint + ")"
-// 			      qml_to_python.addwaypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
-// 			    }
-// 			}		 
-// 		    }
+            Row{
+            width: parent.width
+            Button{
+                id: bwaypoint
+                text: "Add waypoint"
+                font.bold: true;
+                font.pixelSize: 26
+                width: parent.width -20
+                enabled: false
+                onClicked: {
+                  gpslogger.add_waypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
+                  waypoint = waypoint + 1
+                  bwaypoint.text = " Add waypoint (" + waypoint + ")"
+                }
+            }
+            }
 		    
 		    Row{
 			width: parent.width
@@ -471,12 +468,12 @@ Page {
 	  //console.log("stop")
 	  bstart.enabled = true
 	  bstop.enabled = false
-// 	  bwaypoint.enabled = false
+	  bwaypoint.enabled = false
 	  txtname.enabled = true
 	  binterval.enabled = true
 	  txtname.visible = true
 	  lblname.visible = false
-	  qml_to_python.stop()
+	  gpslogger.stop()
 	}
     }
 
@@ -488,16 +485,19 @@ Page {
         titleText: "Recording interval"
 
         model: ListModel {
-//             ListElement { name: "100 milliseconds"; value: 100 }
+//          ListElement { name: "100 milliseconds"; value: 100 }
             ListElement { name: "1 second";   value:   1000 }
+            ListElement { name: "2 second";   value:   2000 }
+            ListElement { name: "3 second";   value:   3000 }
+            ListElement { name: "5 second";   value:   5000 }
             ListElement { name: "10 seconds"; value:  10000 }
-            ListElement { name: "15 seconds"; value:  15000 }
-            ListElement { name: "20 seconds"; value:  20000 }
+//          ListElement { name: "15 seconds"; value:  15000 }
+//          ListElement { name: "20 seconds"; value:  20000 }
             ListElement { name: "30 seconds"; value:  30000 }
             ListElement { name: "1 minute";   value:  60000 }
-            ListElement { name: "2 minute";   value: 120000 }
-            ListElement { name: "5 minutes";  value: 300000 }
-            ListElement { name: "10 minutes"; value: 600000 }
+//          ListElement { name: "2 minute";   value: 120000 }
+//          ListElement { name: "5 minutes";  value: 300000 }
+//          ListElement { name: "10 minutes"; value: 600000 }
         }
         onAccepted: { 
 	  binterval.text = dialoginterval.model.get(dialoginterval.selectedIndex).name
