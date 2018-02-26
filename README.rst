@@ -48,7 +48,16 @@ correction::
   root@theresia:~$ ln -s /home/user/MyDocs/Local/github/miurahr/gpslogger/ /opt/gps-logger
 
 now it does start, but it doesn't do much with the GPS signal.  it does not activate the GPS,
-and if a different program does activate the GPS, gpslogger does not read the values.
+and if a different program does activate the GPS, gpslogger does not read the values.  
+
+`trkpt` elements in the `gpx` file look like this::
+
+                <trkpt lat="nan" lon="nan">
+                        <ele>0</ele>
+                        <time>2018-02-26T02:10:56Z</time>
+                        <desc>Lat.=nan, Long.=nan, Alt.=0m, Speed=-3.6Km/h</desc>
+                </trkpt>
+
 
 also the map does not show at all, maybe (I'm guessing) it is using an obsolete OSM API?
 
