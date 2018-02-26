@@ -17,21 +17,39 @@ first failure::
      from PySide.QtCore import *
  ImportError: No module named PySide.QtCore
 
-attempt at correcting the failure::
+correction::
 
  root@theresia:~$ apt-get install python-pyside
  Reading package lists... Done
  Building dependency tree       
  Reading state information... Done
  The following extra packages will be installed:
-   libpyside1.0 libpython2.6 libshiboken1.0 python-pyside.phonon python-pyside.qtcore python-pyside.qtdeclarative python-pyside.qtgui
-   python-pyside.qtnetwork python-pyside.qtopengl python-pyside.qtscript python-pyside.qtsql python-pyside.qtsvg
+   libpyside1.0 libpython2.6 libshiboken1.0 python-pyside.phonon python-pyside.qtcore
+   python-pyside.qtdeclarative python-pyside.qtgui python-pyside.qtnetwork 
+   python-pyside.qtopengl python-pyside.qtscript python-pyside.qtsql python-pyside.qtsvg
    python-pyside.qtwebkit python-pyside.qtxml python-support
  The following NEW packages will be installed
-   libpyside1.0 libpython2.6 libshiboken1.0 python-pyside python-pyside.phonon python-pyside.qtcore python-pyside.qtdeclarative
-   python-pyside.qtgui python-pyside.qtnetwork python-pyside.qtopengl python-pyside.qtscript python-pyside.qtsql python-pyside.qtsvg
-   python-pyside.qtwebkit python-pyside.qtxml python-support
+   libpyside1.0 libpython2.6 libshiboken1.0 python-pyside python-pyside.phonon 
+   python-pyside.qtcore python-pyside.qtdeclarative python-pyside.qtgui 
+   python-pyside.qtnetwork python-pyside.qtopengl python-pyside.qtscript
+   python-pyside.qtsql python-pyside.qtsvg python-pyside.qtwebkit python-pyside.qtxml
+   python-support
  0 upgraded, 16 newly installed, 0 to remove and 1 not upgraded.
  Need to get 9,354kB of archives.
  After this operation, 26.8MB of additional disk space will be used.
  Do you want to continue [Y/n]? 
+
+failure::
+
+  file:///opt/gps-logger/qml/main.qml: File not found 
+
+attemp at correcting::
+
+  root@theresia:~$ ln -s /home/user/MyDocs/Local/github/miurahr/gpslogger/ /opt/gps-logger
+
+now it does start, but it doesn't do much with the GPS signal.  it does not activate the GPS,
+and if a different program does activate the GPS, gpslogger does not read the values.
+
+also the map does not show at all, maybe (I'm guessing) it is using an obsolete OSM API?
+
+I'll have a look at it in the following days.
