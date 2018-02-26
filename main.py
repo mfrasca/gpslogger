@@ -145,7 +145,6 @@ def start_recording(filename, interval):
       full_filename = data.path + "/" + filename2
       suffix = suffix + 1
 
-
   print "Start recording", full_filename, interval
   try:
     data.filehandle = open(full_filename, 'w')
