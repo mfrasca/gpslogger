@@ -62,3 +62,14 @@ and if a different program does activate the GPS, gpslogger does not read the va
 also the map does not show at all, maybe (I'm guessing) it is using an obsolete OSM API?
 
 I'll have a look at it in the following days.
+
+I grabbed the (working) `gps-logger
+<https://www.ruinelli.ch/download/software/harmattan/gps-logger_0.2.5_armel.deb>`_
+by the original programmer, and installing it shows we need solving a few
+more dependecies::
+  
+  Correcting dependencies...Done
+  The following extra packages will be installed:
+    libffi5 python-gconf python-gobject
+
+    
