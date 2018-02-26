@@ -37,11 +37,10 @@ PageStackWindow {
         id: about
         icon: "../img/icon_80.png"
         titleText: "GPS Logger"
-        message: "Version: " + gpslogger.get_version() + "\n" +
+        message: "Version: " + qml_to_python.get_version() + "\n" +
 		 "Copyright 2012 by George Ruinelli\n"+
                  "Contact: george@ruinelli.ch\n"+
-                 "Web: https://www.ruinelli.ch/projects/harmattan/gps-logger\n"+
-                 "Modified 2013 by Hiroshi Miura"
+                 "Web: www.ruinelli.ch/gps-logger"
 	acceptButtonText: "Ok"
     }
     

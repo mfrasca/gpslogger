@@ -7,9 +7,13 @@ import "." as MyComponents
 
 
 Page {
-    //   orientationLock: PageOrientation.LockLandscape
-    //   orientationLock: PageOrientation.LockPortrait
-    //
+//   orientationLock: PageOrientation.LockLandscape
+//     orientationLock: PageOrientation.LockPortrait
+    
+
+    
+    
+    
     //We want to tell Python whenever our display orientation changes
     //This is done with the signal "onWidthChanged".
     //This how ever is not called at start up, because of that we also use a sigle shot timer
@@ -44,9 +48,9 @@ Page {
     
     function sendGPSdata(){	
 	if(bstart.enabled == false){ //recording
-	    mainPage.points = mainPage.points + 1
-	    lblsamples.text = "recorded " + mainPage.points + " samples"
-	    gpslogger.add_point(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed)
+	    points = points + 1
+	    lblsamples.text = "recorded " + points + " samples"
+	    qml_to_python.add_point(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed)
 	    
 	    mapPage.add_point(positionSource.position.coordinate)
 	}
@@ -79,7 +83,7 @@ Page {
     
     
     property int points: 0
-    property int waypoint: 1
+    property int waypoint: 0
     
 //     property variant mapPage: ""
     
@@ -381,11 +385,11 @@ Page {
 			    width: parent.width / 2 - 12
 			    onClicked: {
 // 				console.log("start")
-				var r = gpslogger.start(txtname.text, timerrecord.interval)
+				var r = qml_to_python.start(txtname.text, timerrecord.interval)				
 				if(r != ""){ //ok
 				  bstart.enabled = false
 				  bstop.enabled = true
-				  bwaypoint.enabled = true
+// 				  bwaypoint.enabled = true
 				  txtname.enabled = false
 				  binterval.enabled = false
 				  //timerrecord.interval = slinterval.value * 1000
@@ -393,9 +397,8 @@ Page {
 				  lblname.visible = true
 				  lblname.text = r
 				  lblsamples.text = ""
-				  mainPage.points = 0
-				  mainPage.waypoint = 1
-				  bwaypoint.text = "Add WayPoint(1)"
+				  points = 0
+				  waypoint = 0
 				  mapPage.remove_all_point()
 				}
 				else{ //failed
@@ -416,36 +419,34 @@ Page {
 			    onClicked: {
 			      dialogstop.open();
 			    }
-			}
+			}			
+			
 		    }
+		    
+// 		    Row{
+// 			width: parent.width
+// 			Button{	
+// 			    id: bwaypoint
+// 			    text: "Add waypoint"
+// 			    font.bold: true;
+// 			    font.pixelSize: 26
+// 			    width: parent.width -20
+// 			    enabled: false
+// 			    onClicked: {
+// 			      waypoint = waypoint + 1
+// 			      bwaypoint = " Add waypoint (" + waypoint + ")"
+// 			      qml_to_python.addwaypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
+// 			    }
+// 			}		 
+// 		    }
+		    
 		    Row{
 			width: parent.width
-			Button{
-			    id: bwaypoint
-			    text: "Add WayPoint(1)"
-			    font.bold: true;
-			    font.pixelSize: 26
-			    width: parent.width -20
-			    enabled: false
-			    onClicked: {
-				gpslogger.add_waypoint(positionSource.position.coordinate.longitude,
-				      positionSource.position.coordinate.latitude,
-				      positionSource.position.coordinate.altitude,
-				      positionSource.position.speed,
-				      mainPage.waypoint)
-				mainPage.waypoint = mainPage.waypoint + 1
-				bwaypoint.text = "Add WayPoint(" + mainPage.waypoint + ")"
-			    }
-			}
-		    }
-
-		    Row{
-			width: parent.width
-			Text{
+			Text{	
 			    id: lblsamples
 			    font.bold: true;
 			    font.pixelSize: 22
-			}
+			}		
 		    }
 		    
 		}
@@ -463,19 +464,19 @@ Page {
         id: dialogstop
         icon: "../img/icon_80.png"
         titleText: "Stop recording"
-        message: "Do you really want to stop recording?"
+        message: "Do you really want to stop reccording?"
 	acceptButtonText: "Yes"
 	rejectButtonText : "No"
 	onAccepted: { 
 	  //console.log("stop")
 	  bstart.enabled = true
 	  bstop.enabled = false
-	  bwaypoint.enabled = false
+// 	  bwaypoint.enabled = false
 	  txtname.enabled = true
 	  binterval.enabled = true
 	  txtname.visible = true
 	  lblname.visible = false
-	  gpslogger.stop()
+	  qml_to_python.stop()
 	}
     }
 
@@ -487,19 +488,16 @@ Page {
         titleText: "Recording interval"
 
         model: ListModel {
-//          ListElement { name: "100 milliseconds"; value: 100 }
+//             ListElement { name: "100 milliseconds"; value: 100 }
             ListElement { name: "1 second";   value:   1000 }
-            ListElement { name: "2 second";   value:   2000 }
-            ListElement { name: "3 second";   value:   3000 }
-            ListElement { name: "5 second";   value:   5000 }
             ListElement { name: "10 seconds"; value:  10000 }
-//          ListElement { name: "15 seconds"; value:  15000 }
-//          ListElement { name: "20 seconds"; value:  20000 }
+            ListElement { name: "15 seconds"; value:  15000 }
+            ListElement { name: "20 seconds"; value:  20000 }
             ListElement { name: "30 seconds"; value:  30000 }
             ListElement { name: "1 minute";   value:  60000 }
-//          ListElement { name: "2 minute";   value: 120000 }
-//          ListElement { name: "5 minutes";  value: 300000 }
-//          ListElement { name: "10 minutes"; value: 600000 }
+            ListElement { name: "2 minute";   value: 120000 }
+            ListElement { name: "5 minutes";  value: 300000 }
+            ListElement { name: "10 minutes"; value: 600000 }
         }
         onAccepted: { 
 	  binterval.text = dialoginterval.model.get(dialoginterval.selectedIndex).name
