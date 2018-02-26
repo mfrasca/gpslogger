@@ -40,7 +40,7 @@ PageStackWindow {
         message: "Version: " + gpslogger.get_version() + "\n" +
 		 "Copyright 2012 by George Ruinelli\n"+
                  "Contact: george@ruinelli.ch\n"+
-                 "Web: www.ruinelli.ch/gps-logger\n"+
+                 "Web: https://www.ruinelli.ch/projects/harmattan/gps-logger\n"+
                  "Modified 2013 by Hiroshi Miura"
 	acceptButtonText: "Ok"
     }

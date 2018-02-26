@@ -40,7 +40,7 @@ Page {
     id: mapPage
     tools: toolbar
 
-    Item{
+    Item {
 	id: page
 	width: parent.width 
 	height: parent.height   

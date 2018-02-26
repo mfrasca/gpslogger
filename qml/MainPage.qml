@@ -463,7 +463,7 @@ Page {
         id: dialogstop
         icon: "../img/icon_80.png"
         titleText: "Stop recording"
-        message: "Do you really want to stop reccording?"
+        message: "Do you really want to stop recording?"
 	acceptButtonText: "Yes"
 	rejectButtonText : "No"
 	onAccepted: { 
