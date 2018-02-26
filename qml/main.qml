@@ -39,8 +39,9 @@ PageStackWindow {
         titleText: "GPS Logger"
         message: "Version: " + qml_to_python.get_version() + "\n" +
 		 "Copyright 2012 by George Ruinelli\n"+
+		 "Copyright 2018 by Mario Frasca\n"+
                  "Contact: george@ruinelli.ch\n"+
-                 "Web: www.ruinelli.ch/gps-logger"
+                 "Web: github.com/mfrasca/gps-logger"
 	acceptButtonText: "Ok"
     }
     
