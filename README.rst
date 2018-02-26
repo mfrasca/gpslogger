@@ -43,7 +43,7 @@ failure::
 
   file:///opt/gps-logger/qml/main.qml: File not found 
 
-attemp at correcting::
+correction::
 
   root@theresia:~$ ln -s /home/user/MyDocs/Local/github/miurahr/gpslogger/ /opt/gps-logger
 
