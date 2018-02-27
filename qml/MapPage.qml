@@ -220,33 +220,33 @@ Page {
         ToolIcon { iconId: "toolbar-back"; onClicked: { pageStack.pop();   } }
 
         ToolButtonRow {
-          ToolButton {
+            ToolButton {
                 id: bzoomin
                 text: "+"
                 font.bold: true;
                 font.pixelSize: 30
                 width: 100
                 onClicked: {
-                  map.zoomLevel += 1
-                  if(map.zoomLevel >= map.maximumZoomLevel) { bzoomin.enabled = false}
-                  bzoomout.enabled = true
+                    map.zoomLevel += 1
+                    if(map.zoomLevel >= map.maximumZoomLevel) { bzoomin.enabled = false}
+                    bzoomout.enabled = true
                 }
             }
-          ToolButton {
+            ToolButton {
                 id: bzoomout
                 text: "-"
                 font.bold: true;
                 font.pixelSize: 30
                 width: 100
                 onClicked: {
-                  map.zoomLevel -= 1
-                  if(map.zoomLevel <= map.minimumZoomLevel) { bzoomout.enabled = false}
-                  bzoomin.enabled = true
+                    map.zoomLevel -= 1
+                    if(map.zoomLevel <= map.minimumZoomLevel) { bzoomout.enabled = false}
+                    bzoomin.enabled = true
                 }
             }
-          ToolButton {
+            ToolButton {
                 id: bgotomyposition
-//                 text: "o"
+                // text: "o"
                 iconSource: "../img/gps_small.png"
                 width: 100
                 onClicked: {
@@ -254,7 +254,7 @@ Page {
                 }
             }
         }
-
+        
         ToolIcon {
             iconId: "toolbar-view-menu" ;
             onClicked: myMenu.open();
