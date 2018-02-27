@@ -37,7 +37,7 @@ Page {
 
     Timer {
         id: timerrecord;
-        interval: 2000;
+        interval: dialoginterval.model.get(1).value;
         running: true;
         repeat: true;
         onTriggered: {
@@ -323,34 +323,14 @@ Page {
                             verticalAlignment: Text.AlignVCenter
                             height: binterval.height
                         }
-
-                        /*Text {
-                            id: txtinterval
-                            text: binterval.text
-                            font.bold: true;
-                            font.pixelSize: 22
-                            verticalAlignment: Text.AlignVCenter
-                            height: slinterval.height
-                        }*/
-
-                        /*Slider {
-                            id: slinterval
-                            objectName: 'slinterval'
-                            valueIndicatorVisible: true
-                            minimumValue: 1
-                            maximumValue: 600
-                            stepSize: 1
-                            value: 1
-                            width: parent.width - lblinterval.width - txtinterval.width - 10
-                        }*/
                         Button {
-                            id: binterval
-                            text: "1 second"
+                            id: binterval;
+                            text: dialoginterval.model.get(1).name;
                             font.bold: true;
                             font.pixelSize: 26
                             width: parent.width - lblinterval.width - 20
                             onClicked: {
-                              dialoginterval.open();
+                                dialoginterval.open();
                             }
                         }
 
