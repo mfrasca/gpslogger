@@ -2,6 +2,25 @@ gpslogger
 ==========
 gps-logger is Meego/Harmattan Nokia N9 GPS logging application, Licensed GPLv3. Original was written by George Ruinelli
 
+short version
+------------------
+
+Install the original `gps-logger.deb
+<https://www.ruinelli.ch/download/software/harmattan/gps-logger_0.2.5_armel.deb>`_
+package, which should already, then decide if you're happy with that one, or
+if you want abitily to pause/resume, and grab waypoints.
+
+In the latter case, overwrite part of your installed gps-logger using this
+`sync script <https://github.com/mfrasca/gpslogger/blob/master/sync>`_.  You
+will need to get permission to write, I can help, but you need some basic
+unix knowledge.
+
+The map page does not work, not in the original (it needs nokia map which
+isn't there any more), not here (I don't know how to link to OSM).
+
+longish version
+------------------
+
 I've forked this in order to update it.  I found no app that would allow me see my position on a OSM map,
 then I came across this project, which says it achieves precisely this, so let's have a look.
 
