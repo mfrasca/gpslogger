@@ -73,3 +73,7 @@ more dependecies::
     libffi5 python-gconf python-gobject
 
     
+I gave up on getting OSM working, I've reduced my expectations to being able
+to record traces, and store waypoints.  what I suggest is that you install
+the original software, then overwrite the qml and py files with what I've
+edited here.  it works for me, and I am available for suggestions.
