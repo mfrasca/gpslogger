@@ -35,6 +35,7 @@ class Data():
     configpath = ""
     configfile = "config.conf"
     opt_in = False
+    waypoints = []
 
 
 ####################################################################################################
@@ -197,22 +198,10 @@ def add_entry(lon, lat, alt, speed):
 
 
 def add_waypoint(lon, lat, alt, speed, waypoint):
-    print "waypoint support is not yet implemented"
-    return
     global data
     if(data.recording is True):
-        print "adding waypoint"
-
-        tt = datetime.utcnow().timetuple()  # time in UTC
-        # >Todo: add milliseconds
-        t = "%d-%02d-%02dT%02d:%02d:%02dZ" % tt[:6]
-        # print t
-        txt = "                <trkpt lat=\"" + str(lat) + "\" lon=\"" + str(lon) + "\">\n" + \
-              "                        <ele>" + str(int(alt)) + "</ele>\n" + \
-              "                        <time>" + str(t) + "</time>\n" + \
-              "                </trkpt>\n"
-
-        data.filehandle.write(txt)
+        t = "%d-%02d-%02dT%02d:%02d:%02dZ" % datetime.utcnow().timetuple()[:6]
+        data.waypoints.append({'lat': lat, 'lon': lon, 'ele': alt, 'time': t, 'name': waypoint})
     else:
         print "file closed, can not add entry"
 
@@ -224,9 +213,17 @@ def stop_recording():
         txt = '''\
     </trkseg>
   </trk>
-</gpx>
+%s</gpx>
 '''
-        data.filehandle.write(txt)
+        waypoint_format = '''\
+	<wpt lat="%(lat)s" lon="%(lon)s">
+		<ele>%(ele)s</ele>
+		<time>%(time)s</time>
+		<name>%(name)s</name>
+	</wpt>
+'''
+        waypoints_xml = ''.join(waypoint_format % item for item in data.waypoints)
+        data.filehandle.write(txt % waypoints_xml)
 
     try:
         data.filehandle.close()
