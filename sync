@@ -1,0 +1,3 @@
+#!/bin/bash
+scp main.py theresia:gpslogger
+scp qml/*.qml theresia:gpslogger/qml
