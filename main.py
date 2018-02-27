@@ -246,6 +246,7 @@ def stop_recording():
   </wpt>'''
         waypoints_xml = ''.join(waypoint_format % item for item in data.waypoints)
         data.filehandle.write(txt % waypoints_xml)
+        data.waypoints = []
 
     try:
         data.filehandle.close()
