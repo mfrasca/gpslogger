@@ -7,13 +7,14 @@ short version
 
 Install the original `gps-logger.deb
 <https://www.ruinelli.ch/download/software/harmattan/gps-logger_0.2.5_armel.deb>`_
-package, which should already, then decide if you're happy with that one, or
-if you want abitily to pause/resume, and grab waypoints.
+package, which should work already, then decide if you're happy with that
+one, or if you want abitily to pause/resume, and grab waypoints.
 
-In the latter case, overwrite part of your installed gps-logger using this
-`sync script <https://github.com/mfrasca/gpslogger/blob/master/sync>`_.  You
-will need to get permission to write, I can help, but you need some basic
-unix knowledge.
+If this is the case, after successful installation and having confirmed the
+original `gps-logger` does work, overwrite part of it, as of `sync script
+<https://github.com/mfrasca/gpslogger/blob/master/sync>`_.  You will need to
+get permission to overwrite these files, I can help, but you better already
+have some basic unix knowledge.
 
 The map page does not work, not in the original (it needs nokia map which
 isn't there any more), not here (I don't know how to link to OSM).
