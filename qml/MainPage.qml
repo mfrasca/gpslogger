@@ -46,7 +46,10 @@ Page {
 	if(bstart.enabled == false) { //recording
 	    points = points + 1
 	    lblsamples.text = "recorded " + points + " samples"
-	    qml_to_python.add_point(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed)
+	    qml_to_python.add_point(positionSource.position.coordinate.longitude,
+                                    positionSource.position.coordinate.latitude,
+                                    positionSource.position.coordinate.altitude,
+                                    positionSource.position.speed)
 
 	    mapPage.add_point(positionSource.position.coordinate)
 	}
@@ -56,19 +59,17 @@ Page {
     }
 
 
-    function convertDecDeg(v,tipo) {
+    function convertDecDeg(value, tipo) {
         if (!tipo)
             tipo='N';
-        var deg;
-        deg = v;
-        if (!deg) {
-	    return "";
-	} else if (deg > 180 || deg < 0) {
+        if (!value) {
+	    return "-";
+	} else if (value > 180 || value < 0) {
 	    // convert coordinate from north to south or east to west if wrong tipo
-	    return convertDecDeg(-v,(tipo=='N'?'S': (tipo=='E'?'W':tipo) ));
+	    return convertDecDeg(-value, (tipo=='N'?'S': (tipo=='E'?'W':tipo) ));
 	} else {
-	    var gpsdeg = parseInt(deg);
-	    var remainder = deg - (gpsdeg * 1.0);
+	    var gpsdeg = parseInt(value);
+	    var remainder = value - (gpsdeg * 1.0);
 	    var gpsmin = remainder * 60.0;
 	    var D = gpsdeg;
 	    var M = parseInt(gpsmin);
@@ -79,7 +80,7 @@ Page {
     }
 
     property int points: 0
-    property int waypoint: 0
+    property int waypoint_no: 0
 
     // property variant mapPage: ""
 
@@ -106,28 +107,20 @@ Page {
 	        if(positionSource.position.longitudeValid) {
 		    lbllon.text = convertDecDeg(positionSource.position.coordinate.longitude, "E")
 	        }
-	        else {
-		    lbllon.text = "-"
-	        }
 
 	        if(positionSource.position.latitudeValid) {
 		    lbllat.text = convertDecDeg(positionSource.position.coordinate.latitude, "N")
 	        }
-	        else {
-		    lbllat.text = "-"
-	        }
 
 	        if(positionSource.position.altitudeValid) {
 		    lblalt.text = Math.round(positionSource.position.coordinate.altitude) + " m"
-	        }
-	        else {
-		    //lblalt.text = "-"
+	        } else {
+		    // lblalt.text = "-"
 	        }
 
 	        if(positionSource.position.speedValid) {
 		    lblspeed.text = Math.round(positionSource.position.speed * 100) / 100 + " m/s (" +  Math.round(positionSource.position.speed * 360) / 100 + " km/h)"
-	        }
-	        else {
+	        } else {
 		    lblspeed.text = ""
 	        }
 
@@ -163,7 +156,7 @@ Page {
 		font.bold: true;
 		font.pixelSize: 32
 		color: "White"
-                
+
 		text: "GPS-Logger"
 	    }
 	    // }
@@ -343,7 +336,7 @@ Page {
 			    valueIndicatorVisible: true
 			    minimumValue: 1
 			    maximumValue: 600
-			    stepSize:  1
+			    stepSize: 1
 			    value: 1
 			    width: parent.width - lblinterval.width - txtinterval.width - 10
 			}*/
@@ -370,30 +363,28 @@ Page {
 			    font.pixelSize: 26
 			    width: parent.width / 2 - 12
 			    onClicked: {
-// 				console.log("start")
+                                // console.log("start")
 				var r = qml_to_python.start(txtname.text, timerrecord.interval)
 				if(r != "") { //ok
-				  bstart.enabled = false
-				  bstop.enabled = true
-// 				  bwaypoint.enabled = true
-				  txtname.enabled = false
-				  binterval.enabled = false
-				  //timerrecord.interval = slinterval.value * 1000
-				  txtname.visible = false
-				  lblname.visible = true
-				  lblname.text = r
-				  lblsamples.text = ""
-				  points = 0
-				  waypoint = 0
-				  mapPage.remove_all_point()
-				}
-				else { //failed
-				  console.log("start failed")
-				  //ToDo: show error
+				    bstart.enabled = false
+				    bstop.enabled = true
+                                    bwaypoint.enabled = true
+				    txtname.enabled = false
+				    binterval.enabled = false
+				    txtname.visible = false
+				    lblname.visible = true
+				    lblname.text = r
+				    lblsamples.text = ""
+				    points = 0
+				    waypoint_no = 0
+				    mapPage.remove_all_point()
+				} else { //failed
+				    console.log("start failed")
+				    //ToDo: show error
 				}
 			    }
 			}
-			Label {width:  5; height: 1} //spacer
+			Label {width: 5; height: 1} //spacer
 
 			Button {
 			    id: bstop
@@ -403,28 +394,32 @@ Page {
 			    width: parent.width / 2 - 12
 			    enabled: false
 			    onClicked: {
-			      dialogstop.open();
+			        dialogstop.open();
 			    }
 			}
 
 		    }
 
-// 		    Row {
-// 			width: parent.width
-// 			Button {
-// 			    id: bwaypoint
-// 			    text: "Add waypoint"
-// 			    font.bold: true;
-// 			    font.pixelSize: 26
-// 			    width: parent.width -20
-// 			    enabled: false
-// 			    onClicked: {
-// 			      waypoint = waypoint + 1
-// 			      bwaypoint = " Add waypoint (" + waypoint + ")"
-// 			      qml_to_python.addwaypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
-// 			    }
-// 			}
-// 		    }
+ 		    Row {
+ 			width: parent.width
+ 			Button {
+ 			    id: bwaypoint
+ 			    text: "Add waypoint"
+ 			    font.bold: true;
+ 			    font.pixelSize: 26
+ 			    width: parent.width -20
+ 			    enabled: false
+ 			    onClicked: {
+ 			        waypoint_no = waypoint_no + 1
+ 			        bwaypoint.text = " Add waypoint (" + waypoint_no + ")"
+ 			        qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
+                                                           positionSource.position.coordinate.latitude,
+                                                           positionSource.position.coordinate.altitude,
+                                                           positionSource.position.speed,
+                                                           waypoint_no)
+ 			    }
+ 			}
+ 		    }
 
 		    Row {
 			width: parent.width
@@ -454,15 +449,15 @@ Page {
 	acceptButtonText: "Yes"
 	rejectButtonText : "No"
 	onAccepted: {
-	  //console.log("stop")
-	  bstart.enabled = true
-	  bstop.enabled = false
-// 	  bwaypoint.enabled = false
-	  txtname.enabled = true
-	  binterval.enabled = true
-	  txtname.visible = true
-	  lblname.visible = false
-	  qml_to_python.stop()
+	    //console.log("stop")
+	    bstart.enabled = true
+	    bstop.enabled = false
+            bwaypoint.enabled = false
+	    txtname.enabled = true
+	    binterval.enabled = true
+	    txtname.visible = true
+	    lblname.visible = false
+	    qml_to_python.stop()
 	}
     }
 
@@ -474,20 +469,20 @@ Page {
         titleText: "Recording interval"
 
         model: ListModel {
-//             ListElement { name: "100 milliseconds"; value: 100 }
+            //ListElement { name: "½ second";   value:    500 }
             ListElement { name: "1 second";   value:   1000 }
+            ListElement { name: "2 seconds";  value:   2000 }
+            ListElement { name: "5 seconds";  value:   5000 }
             ListElement { name: "10 seconds"; value:  10000 }
-            ListElement { name: "15 seconds"; value:  15000 }
-            ListElement { name: "20 seconds"; value:  20000 }
             ListElement { name: "30 seconds"; value:  30000 }
             ListElement { name: "1 minute";   value:  60000 }
-            ListElement { name: "2 minute";   value: 120000 }
+            ListElement { name: "2 minutes";  value: 120000 }
             ListElement { name: "5 minutes";  value: 300000 }
             ListElement { name: "10 minutes"; value: 600000 }
         }
         onAccepted: {
-	  binterval.text = dialoginterval.model.get(dialoginterval.selectedIndex).name
-	  timerrecord.interval = dialoginterval.model.get(dialoginterval.selectedIndex).value
+	    binterval.text = dialoginterval.model.get(dialoginterval.selectedIndex).name
+	    timerrecord.interval = dialoginterval.model.get(dialoginterval.selectedIndex).value
 	}
     }
 
@@ -499,25 +494,23 @@ Page {
 	id: toolbar
 
 	ToolButtonRow {
-	  ToolButton {
+	    ToolButton {
                 id: bshowmap
                 text: "Show map"
                 onClicked: {
-// 		    MyComponents.MapPage.id = "mapPage"
+                    // MyComponents.MapPage.id = "mapPage"
                     pageStack.push(mapPage)
 		    mapPage.setmapplugin()
 		    mapPage.centermyposition()
-// 		    pageStack.push(Qt.resolvedUrl("MapPage.qml"))
+                    // pageStack.push(Qt.resolvedUrl("MapPage.qml"))
 
+                    // var coord = Qt.createQmlObject()
 
-//  var coord = Qt.createQmlObject()
+                    // pageLoader.source = "MapPage.qml"
+                    // pageStack.push(pageLoader)
 
-
-// 		    pageLoader.source = "MapPage.qml"
-// 		    pageStack.push(pageLoader)
-
-// mapPage = Qt.createComponent("MapPage.qml");
-// pageStack.push(mapPage)
+                    // mapPage = Qt.createComponent("MapPage.qml");
+                    // pageStack.push(mapPage)
 
                 }
             }
