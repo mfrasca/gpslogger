@@ -41,7 +41,7 @@ PageStackWindow {
                  "Copyright 2012 by George Ruinelli\n"+
                  "Copyright 2018 by Mario Frasca\n"+
                  "Contact: george@ruinelli.ch\n"+
-                 "Web: github.com/mfrasca/gps-logger"
+                 "Web: github.com/mfrasca/gpslogger"
         acceptButtonText: "Ok"
     }
 
