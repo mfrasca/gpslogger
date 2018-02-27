@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=GPS-Logger
+GenericName=GPS-Logger
+Comment=GPS-Logger records your GPS position into a GPX file
+Exec=invoker --splash=/opt/gps-logger/img/splashscreen-portrait.png --splash-landscape=/opt/gps-logger/img/splashscreen-landscape.png --single-instance --type=e /opt/gps-logger/main.py
+Icon=/usr/share/themes/base/meegotouch/icons/gps-logger.png
+Categories=Utility;
+Type=Application
+
