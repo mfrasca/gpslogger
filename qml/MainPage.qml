@@ -18,44 +18,47 @@ Page {
     }
 
     Timer {
-	interval: 1; running: true; repeat: false
-	onTriggered: {
-	    displayOrientationChanged()
-	}
+        interval: 1;
+        running: true;
+        repeat: false;
+        onTriggered: {
+            displayOrientationChanged()
+        }
     }
 
     //Tell Python that the display orientation changed
     function displayOrientationChanged() {
-	if (width > 600) { // landscape
-	    console.log("[QML INFO] Landscape")
-	}
-	else { // portrait
-	    console.log("[QML INFO] Portrait")
-	}
+        if (width > 600) { // landscape
+            console.log("[QML INFO] Landscape")
+        } else { // portrait
+            console.log("[QML INFO] Portrait")
+        }
     }
 
     Timer {
-	id: timerrecord
-	interval: 1000; running: true; repeat: true
-	onTriggered: {
-	    sendGPSdata()
-	}
+        id: timerrecord;
+        interval: 1000;
+        running: true;
+        repeat: true;
+        onTriggered: {
+            sendGPSdata()
+        }
     }
 
     function sendGPSdata() {
-	if(bstart.enabled == false) { //recording
-	    points = points + 1
-	    lblsamples.text = "recorded " + points + " samples"
-	    qml_to_python.add_point(positionSource.position.coordinate.longitude,
+        if(bstart.enabled == false && bpause.text == "Pause") { //recording
+            points = points + 1
+            lblsamples.text = "recorded " + points + " samples"
+            qml_to_python.add_point(positionSource.position.coordinate.longitude,
                                     positionSource.position.coordinate.latitude,
                                     positionSource.position.coordinate.altitude,
                                     positionSource.position.speed)
 
-	    mapPage.add_point(positionSource.position.coordinate)
-	}
-	else {
+            mapPage.add_point(positionSource.position.coordinate)
+        }
+        else {
             // console.log("-", timerrecord.interval)
-	}
+        }
     }
 
 
@@ -63,20 +66,20 @@ Page {
         if (!tipo)
             tipo='N';
         if (!value) {
-	    return "-";
-	} else if (value > 180 || value < 0) {
-	    // convert coordinate from north to south or east to west if wrong tipo
-	    return convertDecDeg(-value, (tipo=='N'?'S': (tipo=='E'?'W':tipo) ));
-	} else {
-	    var gpsdeg = parseInt(value);
-	    var remainder = value - (gpsdeg * 1.0);
-	    var gpsmin = remainder * 60.0;
-	    var D = gpsdeg;
-	    var M = parseInt(gpsmin);
-	    var remainder2 = gpsmin - (parseInt(gpsmin)*1.0);
-	    var S = parseInt(remainder2*60.0);
-	    return tipo + " " + D + "° " +  Math.round(gpsmin * 1000) / 1000
-	}
+            return "-";
+        } else if (value > 180 || value < 0) {
+            // convert coordinate from north to south or east to west if wrong tipo
+            return convertDecDeg(-value, (tipo=='N'?'S': (tipo=='E'?'W':tipo) ));
+        } else {
+            var gpsdeg = parseInt(value);
+            var remainder = value - (gpsdeg * 1.0);
+            var gpsmin = remainder * 60.0;
+            var D = gpsdeg;
+            var M = parseInt(gpsmin);
+            var remainder2 = gpsmin - (parseInt(gpsmin)*1.0);
+            var S = parseInt(remainder2*60.0);
+            return tipo + " " + D + "° " +  Math.round(gpsmin * 1000) / 1000
+        }
     }
 
     property int points: 0
@@ -94,346 +97,370 @@ Page {
     // anchors.margins: 10
 
     Item {
-	id: page
-	width: parent.width
+        id: page
+        width: parent.width
 
-	PositionSource {
-	    id: positionSource
-	    updateInterval: 1000
-	    active: true
-	    // nmeaSource: "nmealog.txt"
-	    onPositionChanged: {
+        PositionSource {
+            id: positionSource
+            updateInterval: 1000
+            active: true
+            // nmeaSource: "nmealog.txt"
+            onPositionChanged: {
 
-	        if(positionSource.position.longitudeValid) {
-		    lbllon.text = convertDecDeg(positionSource.position.coordinate.longitude, "E")
-	        }
+                if(positionSource.position.longitudeValid) {
+                    lbllon.text = convertDecDeg(positionSource.position.coordinate.longitude, "E")
+                }
 
-	        if(positionSource.position.latitudeValid) {
-		    lbllat.text = convertDecDeg(positionSource.position.coordinate.latitude, "N")
-	        }
+                if(positionSource.position.latitudeValid) {
+                    lbllat.text = convertDecDeg(positionSource.position.coordinate.latitude, "N")
+                }
 
-	        if(positionSource.position.altitudeValid) {
-		    lblalt.text = Math.round(positionSource.position.coordinate.altitude) + " m"
-	        } else {
-		    // lblalt.text = "-"
-	        }
+                if(positionSource.position.altitudeValid) {
+                    lblalt.text = Math.round(positionSource.position.coordinate.altitude) + " m"
+                } else {
+                    // lblalt.text = "-"
+                }
 
-	        if(positionSource.position.speedValid) {
-		    lblspeed.text = Math.round(positionSource.position.speed * 100) / 100 + " m/s (" +  Math.round(positionSource.position.speed * 360) / 100 + " km/h)"
-	        } else {
-		    lblspeed.text = ""
-	        }
+                if(positionSource.position.speedValid) {
+                    lblspeed.text = Math.round(positionSource.position.speed * 100) / 100 + " m/s (" +  Math.round(positionSource.position.speed * 360) / 100 + " km/h)"
+                } else {
+                    lblspeed.text = ""
+                }
 
-	    }
-	}
-
-
-	Item {
-	    id: titlebar
-	    width: parent.width
-	    height: 70
-
-	    Rectangle {
-		anchors.fill: parent
-		color: "green";
-	    }
-	    //Row {
-	    Image {
-		id: imggps
-		source: "../img/gps_256.png"
-		width: 62
-		height: 62
-	    }
-
-	    Label {
-		anchors {
-		    left: imggps.right
-		    leftMargin: 10
-		    verticalCenter: parent.verticalCenter
-		    top: parent.top
-		    topMargin: 20
-		}
-		font.bold: true;
-		font.pixelSize: 32
-		color: "White"
-
-		text: "GPS-Logger"
-	    }
-	    // }
-	}
+            }
+        }
 
 
-	Flickable {
-	    id: flickable
-	    width: parent.width
-	    anchors.top: titlebar.bottom
-	    height: mainPage.height - titlebar.height
-	    contentWidth: parent.width
-	    contentHeight: col.height + 20
-	    clip: true
+        Item {
+            id: titlebar
+            width: parent.width
+            height: 70
 
-	    Column {
-		width: parent.width
-		id: col
-		anchors {
-		    left: parent.left
-		    leftMargin: 10
-		    rightMargin: 10
-		    topMargin: 10
-		    top: parent.top
-		}
+            Rectangle {
+                anchors.fill: parent
+                color: "green";
+            }
+            //Row {
+            Image {
+                id: imggps
+                source: "../img/gps_256.png"
+                width: 62
+                height: 62
+            }
 
-		Column {
-		    width: parent.width
-		    spacing: 10
+            Label {
+                anchors {
+                    left: imggps.right
+                    leftMargin: 10
+                    verticalCenter: parent.verticalCenter
+                    top: parent.top
+                    topMargin: 20
+                }
+                font.bold: true;
+                font.pixelSize: 32
+                color: "White"
+
+                text: "GPS-Logger"
+            }
+            // }
+        }
 
 
-		    id: current
-		    Text {
-			text: "Current position data"
-			font.bold: true;
-			font.pixelSize: 26
-			verticalAlignment: Text.AlignVCenter
-		    }
+        Flickable {
+            id: flickable
+            width: parent.width
+            anchors.top: titlebar.bottom
+            height: mainPage.height - titlebar.height
+            contentWidth: parent.width
+            contentHeight: col.height + 20
+            clip: true
 
-		    Row {
-			Text {
-			    text: "Longitude: "
-			    font.pixelSize: 22
-			}
-			Text {
-			    id: lbllon
-			    //text: positionSource.position.coordinate.longitude
-			    font.pixelSize: 22
-			}
-		    }
+            Column {
+                width: parent.width
+                id: col
+                anchors {
+                    left: parent.left
+                    leftMargin: 10
+                    rightMargin: 10
+                    topMargin: 10
+                    top: parent.top
+                }
 
-		    Row {
-			Text {
-			    text: "Latitude: "
-			    font.pixelSize: 22
-			}
-			Text {
-			    id: lbllat
-			    //text: positionSource.position.coordinate.latitude
-			    font.pixelSize: 22
-			}
-		    }
+                Column {
+                    width: parent.width
+                    spacing: 10
 
-		    Row {
-			Text {
-			    text: "Altitude: "
-			    font.pixelSize: 22
-			}
-			Text {
-			    id: lblalt
+
+                    id: current
+                    Text {
+                        text: "Current position data"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    Row {
+                        Text {
+                            text: "Longitude: "
+                            font.pixelSize: 22
+                        }
+                        Text {
+                            id: lbllon
+                            //text: positionSource.position.coordinate.longitude
+                            font.pixelSize: 22
+                        }
+                    }
+
+                    Row {
+                        Text {
+                            text: "Latitude: "
+                            font.pixelSize: 22
+                        }
+                        Text {
+                            id: lbllat
+                            //text: positionSource.position.coordinate.latitude
+                            font.pixelSize: 22
+                        }
+                    }
+
+                    Row {
+                        Text {
+                            text: "Altitude: "
+                            font.pixelSize: 22
+                        }
+                        Text {
+                            id: lblalt
                             // text: positionSource.position.coordinate.altitude
-			    font.pixelSize: 22
-			}
-		    }
+                            font.pixelSize: 22
+                        }
+                    }
 
-		    Row {
-			Text {
-			    text: "Speed: "
-			    font.pixelSize: 22
-			}
-			Text {
-			    id: lblspeed
+                    Row {
+                        Text {
+                            text: "Speed: "
+                            font.pixelSize: 22
+                        }
+                        Text {
+                            id: lblspeed
                             // text: positionSource.position.speed
-			    font.pixelSize: 22
-			}
-		    }
+                            font.pixelSize: 22
+                        }
+                    }
 
-		    /*Row {
-			Text {
-			    text: "Time: "
-			    font.pixelSize: 22
-			}
-			Text {
-			    id: lbltime
-			    text: positionSource.position.timestamp
-			    font.pixelSize: 22
-			}
-		    }*/
+                    /*Row {
+                        Text {
+                            text: "Time: "
+                            font.pixelSize: 22
+                        }
+                        Text {
+                            id: lbltime
+                            text: positionSource.position.timestamp
+                            font.pixelSize: 22
+                        }
+                    }*/
 
-		}
+                }
 
-		Column {
-		    width: parent.width
-		    spacing: 20
+                Column {
+                    width: parent.width
+                    spacing: 20
 
-		    Rectangle {
-			id: separator
-			height: 1
-			width: parent.width - 20
-			color: "green"
-		    }
+                    Rectangle {
+                        id: separator
+                        height: 1
+                        width: parent.width - 20
+                        color: "green"
+                    }
 
-		    Row {
-			id: record
-			Text {
-			    text: "Record"
-			    font.bold: true;
-			    font.pixelSize: 26
-			    verticalAlignment: Text.AlignVCenter
-			}
-		    }
+                    Row {
+                        id: record
+                        Text {
+                            text: "Record"
+                            font.bold: true;
+                            font.pixelSize: 26
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
 
 
-		    Row {
-			id:name
-			width: parent.width
-			Text {
-			    id: lblname2
-			    text: "Name: "
-			    font.bold: true;
-			    font.pixelSize: 22
-			    verticalAlignment: Text.AlignVCenter
-			    height: txtname.height
-			}
-			TextField {
-			    id: txtname
-// 			    validator: IntValidator {bottom: 1; top: 31;}
-// 			    inputMethodHints: Qt.ImhDigitsOnly | Qt.ImhNoPredictiveText
-			    height: 50
-			    width: parent.width - lblname2.width - 20
-			}
-			Text {
-			    id: lblname
-			    font.bold: true;
-			    font.pixelSize: 22
-			    verticalAlignment: Text.AlignVCenter
-			    height: 50
-			    width: parent.width - lblname2.width - 20
-			    visible: false
-			}
-		    }
+                    Row {
+                        id:name
+                        width: parent.width
+                        Text {
+                            id: lblname2
+                            text: "Name: "
+                            font.bold: true;
+                            font.pixelSize: 22
+                            verticalAlignment: Text.AlignVCenter
+                            height: txtname.height
+                        }
+                        TextField {
+                            id: txtname
+//                             validator: IntValidator {bottom: 1; top: 31;}
+//                             inputMethodHints: Qt.ImhDigitsOnly | Qt.ImhNoPredictiveText
+                            height: 50
+                            width: parent.width - lblname2.width - 20
+                        }
+                        Text {
+                            id: lblname
+                            font.bold: true;
+                            font.pixelSize: 22
+                            verticalAlignment: Text.AlignVCenter
+                            height: 50
+                            width: parent.width - lblname2.width - 20
+                            visible: false
+                        }
+                    }
 
-		    Row {
-			id:interval
-			width: parent.width
-			Text {
-			    id: lblinterval
-			    text: "Interval: "
-			    font.bold: true;
-			    font.pixelSize: 22
-			    verticalAlignment: Text.AlignVCenter
-			    height: binterval.height
-			}
+                    Row {
+                        id:interval
+                        width: parent.width
+                        Text {
+                            id: lblinterval
+                            text: "Interval: "
+                            font.bold: true;
+                            font.pixelSize: 22
+                            verticalAlignment: Text.AlignVCenter
+                            height: binterval.height
+                        }
 
-			/*Text {
-			    id: txtinterval
-			    text: binterval.text
-			    font.bold: true;
-			    font.pixelSize: 22
-			    verticalAlignment: Text.AlignVCenter
-			    height: slinterval.height
-			}*/
+                        /*Text {
+                            id: txtinterval
+                            text: binterval.text
+                            font.bold: true;
+                            font.pixelSize: 22
+                            verticalAlignment: Text.AlignVCenter
+                            height: slinterval.height
+                        }*/
 
-			/*Slider {
-			    id: slinterval
-			    objectName: 'slinterval'
-			    valueIndicatorVisible: true
-			    minimumValue: 1
-			    maximumValue: 600
-			    stepSize: 1
-			    value: 1
-			    width: parent.width - lblinterval.width - txtinterval.width - 10
-			}*/
-			Button {
-			    id: binterval
-			    text: "1 second"
-			    font.bold: true;
-			    font.pixelSize: 26
-			    width: parent.width - lblinterval.width - 20
-			    onClicked: {
-			      dialoginterval.open();
-			    }
-			}
+                        /*Slider {
+                            id: slinterval
+                            objectName: 'slinterval'
+                            valueIndicatorVisible: true
+                            minimumValue: 1
+                            maximumValue: 600
+                            stepSize: 1
+                            value: 1
+                            width: parent.width - lblinterval.width - txtinterval.width - 10
+                        }*/
+                        Button {
+                            id: binterval
+                            text: "1 second"
+                            font.bold: true;
+                            font.pixelSize: 26
+                            width: parent.width - lblinterval.width - 20
+                            onClicked: {
+                              dialoginterval.open();
+                            }
+                        }
 
-		    }
+                    }
 
-		    Row {
-			id:buttons
-			width: parent.width
-			Button {
-			    id: bstart
-			    text: "Start"
-			    font.bold: true;
-			    font.pixelSize: 26
-			    width: parent.width / 2 - 12
-			    onClicked: {
+                    Row {
+                        id:buttons
+                        width: parent.width
+
+                        Button {
+                            id: bstart
+                            text: "Start"
+                            font.bold: true;
+                            font.pixelSize: 26
+                            width: (parent.width - 5*2 - 6) / 3
+                            onClicked: {
                                 // console.log("start")
-				var r = qml_to_python.start(txtname.text, timerrecord.interval)
-				if(r != "") { //ok
-				    bstart.enabled = false
-				    bstop.enabled = true
+                                var r = qml_to_python.start(txtname.text, timerrecord.interval)
+                                if(r != "") { //ok
+                                    bstart.enabled = false
+                                    bstop.enabled = true
+                                    bpause.text = "Pause"
+                                    bpause.enabled = true
                                     bwaypoint.enabled = true
-				    txtname.enabled = false
-				    binterval.enabled = false
-				    txtname.visible = false
-				    lblname.visible = true
-				    lblname.text = r
-				    lblsamples.text = ""
-				    points = 0
-				    waypoint_no = 0
-				    mapPage.remove_all_point()
-				} else { //failed
-				    console.log("start failed")
-				    //ToDo: show error
-				}
-			    }
-			}
-			Label {width: 5; height: 1} //spacer
+                                    txtname.enabled = false
+                                    binterval.enabled = false
+                                    txtname.visible = false
+                                    lblname.visible = true
+                                    lblname.text = r
+                                    lblsamples.text = ""
+                                    points = 0
+                                    waypoint_no = 0
+                                    mapPage.remove_all_point()
+                                } else { //failed
+                                    console.log("start failed")
+                                    //ToDo: show error
+                                }
+                            }
+                        }
+                        
+                        Label {width: 5; height: 1} //spacer
+                        
+                        Button {
+                            id: bstop
+                            text: "Stop"
+                            font.bold: true;
+                            font.pixelSize: 26
+                            width: (parent.width - 5*2 - 6) / 3
+                            enabled: false
+                            onClicked: {
+                                dialogstop.open();
+                            }
+                        }
+                        
+                        Label {width: 5; height: 1} //spacer
+                        
+                        Button {
+                            id: bpause
+                            text: "Pause"
+                            font.bold: true;
+                            font.pixelSize: 26
+                            width: (parent.width - 5*2 - 6) / 3
+                            enabled: false
+                            onClicked: {
+                                if(bpause.text == "Pause") {
+                                    qml_to_python.pause()
+                                    bpause.text = "Resume"
+                                } else {
+                                    qml_to_python.resume()
+                                    bpause.text = "Pause"
+                                }
+                            }
+                        }
 
-			Button {
-			    id: bstop
-			    text: "Stop"
-			    font.bold: true;
-			    font.pixelSize: 26
-			    width: parent.width / 2 - 12
-			    enabled: false
-			    onClicked: {
-			        dialogstop.open();
-			    }
-			}
+                    }
 
-		    }
-
- 		    Row {
- 			width: parent.width
- 			Button {
- 			    id: bwaypoint
- 			    text: "Add waypoint"
- 			    font.bold: true;
- 			    font.pixelSize: 26
- 			    width: parent.width -20
- 			    enabled: false
- 			    onClicked: {
- 			        waypoint_no = waypoint_no + 1
- 			        bwaypoint.text = " Add waypoint (" + waypoint_no + ")"
- 			        qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
+                     Row {
+                         width: parent.width
+                         Button {
+                             id: bwaypoint
+                             text: "Add waypoint"
+                             font.bold: true;
+                             font.pixelSize: 26
+                             width: parent.width -20
+                             enabled: false
+                             onClicked: {
+                                 waypoint_no = waypoint_no + 1
+                                 bwaypoint.text = " Add waypoint (" + waypoint_no + ")"
+                                 qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
                                                            positionSource.position.coordinate.latitude,
                                                            positionSource.position.coordinate.altitude,
                                                            positionSource.position.speed,
                                                            waypoint_no)
- 			    }
- 			}
- 		    }
+                             }
+                         }
+                     }
 
-		    Row {
-			width: parent.width
-			Text {
-			    id: lblsamples
-			    font.bold: true;
-			    font.pixelSize: 22
-			}
-		    }
+                    Row {
+                        width: parent.width
+                        Text {
+                            id: lblsamples
+                            font.bold: true;
+                            font.pixelSize: 22
+                        }
+                    }
 
-		}
+                }
 
-	    }
-	}
+            }
+        }
 
     }
 
@@ -446,19 +473,21 @@ Page {
         icon: "../img/icon_80.png"
         titleText: "Stop recording"
         message: "Do you really want to stop recording?"
-	acceptButtonText: "Yes"
-	rejectButtonText : "No"
-	onAccepted: {
-	    //console.log("stop")
-	    bstart.enabled = true
-	    bstop.enabled = false
+        acceptButtonText: "Yes"
+        rejectButtonText : "No"
+        onAccepted: {
+            //console.log("stop")
+            bstart.enabled = true
+            bpause.enabled = false
+            bpause.text = "Pause"
+            bstop.enabled = false
             bwaypoint.enabled = false
-	    txtname.enabled = true
-	    binterval.enabled = true
-	    txtname.visible = true
-	    lblname.visible = false
-	    qml_to_python.stop()
-	}
+            txtname.enabled = true
+            binterval.enabled = true
+            txtname.visible = true
+            lblname.visible = false
+            qml_to_python.stop()
+        }
     }
 
 //*******************************************************
@@ -481,9 +510,9 @@ Page {
             ListElement { name: "10 minutes"; value: 600000 }
         }
         onAccepted: {
-	    binterval.text = dialoginterval.model.get(dialoginterval.selectedIndex).name
-	    timerrecord.interval = dialoginterval.model.get(dialoginterval.selectedIndex).value
-	}
+            binterval.text = dialoginterval.model.get(dialoginterval.selectedIndex).name
+            timerrecord.interval = dialoginterval.model.get(dialoginterval.selectedIndex).value
+        }
     }
 
 //*******************************************************
@@ -491,17 +520,17 @@ Page {
 
 
     ToolBarLayout {
-	id: toolbar
+        id: toolbar
 
-	ToolButtonRow {
-	    ToolButton {
+        ToolButtonRow {
+            ToolButton {
                 id: bshowmap
                 text: "Show map"
                 onClicked: {
                     // MyComponents.MapPage.id = "mapPage"
                     pageStack.push(mapPage)
-		    mapPage.setmapplugin()
-		    mapPage.centermyposition()
+                    mapPage.setmapplugin()
+                    mapPage.centermyposition()
                     // pageStack.push(Qt.resolvedUrl("MapPage.qml"))
 
                     // var coord = Qt.createQmlObject()
@@ -514,12 +543,12 @@ Page {
 
                 }
             }
-	}
+        }
 
-	ToolIcon {
-	    iconId: "toolbar-view-menu" ;
-	    onClicked: myMenu.open();
-	}
+        ToolIcon {
+            iconId: "toolbar-view-menu" ;
+            onClicked: myMenu.open();
+        }
     }
 
 

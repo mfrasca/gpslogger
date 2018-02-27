@@ -29,6 +29,7 @@ class Data():
     root = "/opt/gps-logger/"
     filehandle = None
     recording = False
+    paused = False
     path = "/home/user/MyDocs/GPS-Logger"
     version = "??"
     build = "?"
@@ -97,6 +98,15 @@ class QML_to_Python_Interface(QObject):
         # print "stop"
         stop_recording()
 
+    @Slot()
+    def pause(self):
+        data.paused = True
+
+    @Slot()
+    def resume(self):
+        start_new_segment()
+        data.paused = False
+
     @Slot(float, float, float, float)
     def add_point(self, lon, lat, alt, speed):
         # print "recording", lon, lat, alt, speed, time
@@ -150,17 +160,16 @@ def start_recording(filename, interval):
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      creator="N9 GPS Logger"
      version="1.1"
-     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n'''
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">'''
         data.filehandle.write(txt)
-        txt = '''\
+        txt = '''
   <metadata>
     <link href="http://github.com/mfrasca/gpslogger">
       <text>N9 GPS Logger</text>
     </link>
-  </metadata>
-  '''
+  </metadata>'''
         data.filehandle.write(txt)
-        txt = '''\
+        txt = '''
   <trk>
     <name>%s</name>
     <trkseg>''' % filename
@@ -173,9 +182,22 @@ def start_recording(filename, interval):
         return ""
 
 
+def start_new_segment():
+    global data
+    if(data.recording is True):
+        txt = '''
+    </trkseg>
+    <trkseg>'''
+        data.filehandle.write(txt)
+    else:
+        print "file closed, can not write to it"
+    
+    
 def add_entry(lon, lat, alt, speed):
     global data
     if(data.recording is True):
+        if data.paused:
+            return
         # print "adding entry"
 
         tt = datetime.utcnow().timetuple()  # time in UTC
@@ -186,11 +208,12 @@ def add_entry(lon, lat, alt, speed):
 
         t = "%d-%02d-%02dT%02d:%02d:%02dZ" % tt[:6]
         s = speed * 3.6
-        txt = ('<trkpt lat="%(lat)s" lon="%(lon)s">\n' +
-               '  <ele>%(ele)s</ele>\n' +
-               '  <time>%(ele)s</time>\n' +
-               '  <desc>Lat.=%(lat)s, Long.=%(lon)s, Alt.=%(ele)sm, Speed=%(speed)sKm/h</desc>\n' +
-               '</trkpt>\n') % {'lat': lat, 'lon': lon, 'ele': alt, 'time': t, 'speed': s}
+        txt = '''
+      <trkpt lat="%(lat)s" lon="%(lon)s">
+        <ele>%(ele)s</ele>
+        <time>%(ele)s</time>
+        <desc>Lat.=%(lat)s, Long.=%(lon)s, Alt.=%(ele)sm, Speed=%(speed)sKm/h</desc>
+      </trkpt>''' % {'lat': lat, 'lon': lon, 'ele': alt, 'time': t, 'speed': s}
 
         data.filehandle.write(txt)
     else:
@@ -210,18 +233,17 @@ def stop_recording():
     global data
     print "Stop recording"
     if(data.recording is True):
-        txt = '''\
+        txt = '''
     </trkseg>
-  </trk>
-%s</gpx>
+  </trk>%s
+</gpx>
 '''
-        waypoint_format = '''\
-	<wpt lat="%(lat)s" lon="%(lon)s">
-		<ele>%(ele)s</ele>
-		<time>%(time)s</time>
-		<name>%(name)s</name>
-	</wpt>
-'''
+        waypoint_format = '''
+  <wpt lat="%(lat)s" lon="%(lon)s">
+    <ele>%(ele)s</ele>
+    <time>%(time)s</time>
+    <name>%(name)s</name>
+  </wpt>'''
         waypoints_xml = ''.join(waypoint_format % item for item in data.waypoints)
         data.filehandle.write(txt % waypoints_xml)
 
