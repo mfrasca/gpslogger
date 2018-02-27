@@ -41,57 +41,24 @@ Page {
     id: mapPage
     tools: toolbar
 
-//     anchors.margins: 10
-
-
     Item {
         id: page
         width: parent.width
         height: parent.height
 
         Plugin {
+            id: mapplugin
+            name: "osm"
+            PluginParameter { name: "osm.useragent"; value: "ghini.tour" }
+            PluginParameter { name: "osm.mapping.host"; value: "http://c.tile.openstreetmap.org/" }
+            PluginParameter { name: "osm.mapping.copyright"; value: "©" }
+        }
+        /*Plugin {
                   id: mapplugin
                   name : "nokia"
                   PluginParameter { name: "app_id"; value: "7FyznCdyZb5pU0pzECvK" } //https://api.developer.nokia.com/ovi-api/ui/registration?action=list
                   PluginParameter { name: "token"; value: "KVFpgX3oovrK7-VvV0g6OA" }
-                }
-
-
-
-        /*Item {
-          id: titlebar
-            width: parent.width
-            height: 70
-
-            Rectangle {
-                anchors.fill: parent
-                color: "green";
-            }
-            //Row {
-              Image {
-                  id: imggps
-                  source: "../img/gps_256.png"
-                  width: 62
-                  height: 62
-              }
-
-              Label {
-                  anchors {
-                      left: imggps.right
-                      leftMargin: 10
-                      verticalCenter: parent.verticalCenter
-                      top: parent.top
-                      topMargin: 20
-                  }
-                  font.bold: true;
-                  font.pixelSize: 32
-                  color: "White"
-
-                  text: "GPS-Logger"
-              }
-           // }
-        }*/
-
+                }*/
 
 
         Item {

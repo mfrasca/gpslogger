@@ -133,7 +133,7 @@ def start_recording(filename, interval):
 
     if(os.path.exists(full_filename)):
         while(os.path.exists(full_filename)):
-            filename2 = "%s_%04d.gps" % (filename, suffix)
+            filename2 = "%s_%04d.gpx" % (filename, suffix)
             full_filename = data.path + "/" + filename2
             suffix = suffix + 1
 
@@ -188,7 +188,7 @@ def add_entry(lon, lat, alt, speed):
         txt = ('<trkpt lat="%(lat)s" lon="%(lon)s">\n' +
                '  <ele>%(ele)s</ele>\n' +
                '  <time>%(ele)s</time>\n' +
-               '  <desc>Lat.=%(lat)s, Long.=%(lon)s, Alt.=%(alt)sm, Speed=%(speed)sKm/h</desc>\n' +
+               '  <desc>Lat.=%(lat)s, Long.=%(lon)s, Alt.=%(ele)sm, Speed=%(speed)sKm/h</desc>\n' +
                '</trkpt>\n') % {'lat': lat, 'lon': lon, 'ele': alt, 'time': t, 'speed': s}
 
         data.filehandle.write(txt)
