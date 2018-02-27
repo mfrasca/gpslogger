@@ -3,16 +3,16 @@ import com.nokia.meego 1.0
 
 PageStackWindow {
     id: appWindow
-    
-   
-    function show_Opt_In(){
-	dialog_Opt_In.open()
-    }  
-    
-    
-    
+
+
+    function show_Opt_In() {
+        dialog_Opt_In.open()
+    }
+
+
+
     initialPage: mainPage
-    MainPage{id: mainPage}
+    MainPage {id: mainPage}
 
 
     Menu {
@@ -23,7 +23,7 @@ PageStackWindow {
                 text: "About"
                 onClicked: { about.open(); }
             }
-            
+
             MenuItem {
                 text: "Help"
                 onClicked: { help.open(); }
@@ -38,36 +38,36 @@ PageStackWindow {
         icon: "../img/icon_80.png"
         titleText: "GPS Logger"
         message: "Version: " + qml_to_python.get_version() + "\n" +
-		 "Copyright 2012 by George Ruinelli\n"+
-		 "Copyright 2018 by Mario Frasca\n"+
+                 "Copyright 2012 by George Ruinelli\n"+
+                 "Copyright 2018 by Mario Frasca\n"+
                  "Contact: george@ruinelli.ch\n"+
                  "Web: github.com/mfrasca/gps-logger"
-	acceptButtonText: "Ok"
+        acceptButtonText: "Ok"
     }
-    
+
 
     QueryDialog {
         id: help
         icon: "../img/icon_80.png"
         titleText: "GPS Logger"
         message: "The tracks will be saved in MyDocs/GPS-Logger."
-	acceptButtonText: "Ok"
+        acceptButtonText: "Ok"
     }
-    
+
 
     QueryDialog {
         id: dialog_Opt_In
         icon: "../img/icon_80.png"
         titleText: "GPS Logger"
         message: "How useful is a GPS-Logger without a GPS signal? You might think this is a stupid question. But Nokia still forces me to ask you:\nDo you accept that GPS-Logger uses your GPS and Location data?\nPlease push YES, else I have to die..."
-	acceptButtonText: "YES"
-        rejectButtonText: "Let me die..."  
+        acceptButtonText: "YES"
+        rejectButtonText: "Let me die..."
         onAccepted: {
-	    qml_to_python.Opt_In(true)
-	}
+            qml_to_python.Opt_In(true)
+        }
         onRejected: {
-	    qml_to_python.Opt_In(false)
-	}
+            qml_to_python.Opt_In(false)
+        }
     }
 
 

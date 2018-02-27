@@ -5,68 +5,65 @@ import QtMobility.location 1.1
 import "." as MyComponents
 
 
-
 Page {
 //   orientationLock: PageOrientation.LockLandscape
 //     orientationLock: PageOrientation.LockPortrait
-    
 
-    
-    
-    
+
     //We want to tell Python whenever our display orientation changes
     //This is done with the signal "onWidthChanged".
     //This how ever is not called at start up, because of that we also use a sigle shot timer
     onWidthChanged: {
-      displayOrientationChanged()
+        displayOrientationChanged()
     }
 
     Timer {
 	interval: 1; running: true; repeat: false
 	onTriggered: {
-	  displayOrientationChanged()    
+	    displayOrientationChanged()
 	}
     }
-    
+
     //Tell Python that the display orientation changed
-    function displayOrientationChanged(){
-	if (width > 600) { // landscape			
+    function displayOrientationChanged() {
+	if (width > 600) { // landscape
 	    console.log("[QML INFO] Landscape")
-	} 
-	else { // portrait		
+	}
+	else { // portrait
 	    console.log("[QML INFO] Portrait")
-	}	
+	}
     }
-    
+
     Timer {
 	id: timerrecord
 	interval: 1000; running: true; repeat: true
 	onTriggered: {
-	  sendGPSdata()    
+	    sendGPSdata()
 	}
     }
-    
-    function sendGPSdata(){	
-	if(bstart.enabled == false){ //recording
+
+    function sendGPSdata() {
+	if(bstart.enabled == false) { //recording
 	    points = points + 1
 	    lblsamples.text = "recorded " + points + " samples"
 	    qml_to_python.add_point(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed)
-	    
+
 	    mapPage.add_point(positionSource.position.coordinate)
 	}
-	else{
-// 	  console.log("-", timerrecord.interval)
+	else {
+            // console.log("-", timerrecord.interval)
 	}
     }
-    
-    
+
+
     function convertDecDeg(v,tipo) {
-	if (!tipo) tipo='N';
-	    var deg;
-	    deg = v;
-	    if (!deg){
+        if (!tipo)
+            tipo='N';
+        var deg;
+        deg = v;
+        if (!deg) {
 	    return "";
-	} else if (deg > 180 || deg < 0){
+	} else if (deg > 180 || deg < 0) {
 	    // convert coordinate from north to south or east to west if wrong tipo
 	    return convertDecDeg(-v,(tipo=='N'?'S': (tipo=='E'?'W':tipo) ));
 	} else {
@@ -80,68 +77,66 @@ Page {
 	    return tipo + " " + D + "° " +  Math.round(gpsmin * 1000) / 1000
 	}
     }
-    
-    
+
     property int points: 0
     property int waypoint: 0
-    
-//     property variant mapPage: ""
-    
-    
+
+    // property variant mapPage: ""
+
+
 //*******************************************************
-    
-    
+
+
     id: mainPage
     tools: toolbar
 
-//     anchors.margins: 10
-    
-    
-    Item{
+    // anchors.margins: 10
+
+    Item {
 	id: page
-	width: parent.width   
-	  
+	width: parent.width
+
 	PositionSource {
 	    id: positionSource
 	    updateInterval: 1000
 	    active: true
 	    // nmeaSource: "nmealog.txt"
-	    onPositionChanged:{
-	      
-	      if(positionSource.position.longitudeValid){
-		lbllon.text = convertDecDeg(positionSource.position.coordinate.longitude, "E")
-	      }
-	      else{
-		lbllon.text = "-"
-	      }
-	      
-	      if(positionSource.position.latitudeValid){
-		lbllat.text = convertDecDeg(positionSource.position.coordinate.latitude, "N")
-	      }
-	      else{
-		lbllat.text = "-"
-	      }
-	      
-	      if(positionSource.position.altitudeValid){
-		lblalt.text = Math.round(positionSource.position.coordinate.altitude) + " m"
-	      }
-	      else{
-		//lblalt.text = "-"
-	      }
-	      
-	      if(positionSource.position.speedValid){
-		lblspeed.text = Math.round(positionSource.position.speed * 100) / 100 + " m/s (" +  Math.round(positionSource.position.speed * 360) / 100 + " km/h)"
-	      }
-	      else{
-		lblspeed.text = ""
-	      }
-	      
+	    onPositionChanged: {
+
+	        if(positionSource.position.longitudeValid) {
+		    lbllon.text = convertDecDeg(positionSource.position.coordinate.longitude, "E")
+	        }
+	        else {
+		    lbllon.text = "-"
+	        }
+
+	        if(positionSource.position.latitudeValid) {
+		    lbllat.text = convertDecDeg(positionSource.position.coordinate.latitude, "N")
+	        }
+	        else {
+		    lbllat.text = "-"
+	        }
+
+	        if(positionSource.position.altitudeValid) {
+		    lblalt.text = Math.round(positionSource.position.coordinate.altitude) + " m"
+	        }
+	        else {
+		    //lblalt.text = "-"
+	        }
+
+	        if(positionSource.position.speedValid) {
+		    lblspeed.text = Math.round(positionSource.position.speed * 100) / 100 + " m/s (" +  Math.round(positionSource.position.speed * 360) / 100 + " km/h)"
+	        }
+	        else {
+		    lblspeed.text = ""
+	        }
+
 	    }
 	}
-	  
-	  
+
+
 	Item {
-	  id: titlebar
+	    id: titlebar
 	    width: parent.width
 	    height: 70
 
@@ -149,43 +144,42 @@ Page {
 		anchors.fill: parent
 		color: "green";
 	    }
-	    //Row{
-	      Image {
-		  id: imggps
-		  source: "../img/gps_256.png"
-		  width: 62
-		  height: 62
-	      }
-	      
-	      Label {
-		  anchors {
-		      left: imggps.right
-		      leftMargin: 10
-		      verticalCenter: parent.verticalCenter
-		      top: parent.top
-		      topMargin: 20
-		  }
-		  font.bold: true;
-		  font.pixelSize: 32
-		  color: "White"
+	    //Row {
+	    Image {
+		id: imggps
+		source: "../img/gps_256.png"
+		width: 62
+		height: 62
+	    }
 
-		  text: "GPS-Logger"
-	      }
-	   // }
+	    Label {
+		anchors {
+		    left: imggps.right
+		    leftMargin: 10
+		    verticalCenter: parent.verticalCenter
+		    top: parent.top
+		    topMargin: 20
+		}
+		font.bold: true;
+		font.pixelSize: 32
+		color: "White"
+                
+		text: "GPS-Logger"
+	    }
+	    // }
 	}
 
-		
-	  
-	Flickable {	  
+
+	Flickable {
 	    id: flickable
 	    width: parent.width
 	    anchors.top: titlebar.bottom
 	    height: mainPage.height - titlebar.height
 	    contentWidth: parent.width
-	    contentHeight: col.height + 20	    
+	    contentHeight: col.height + 20
 	    clip: true
-	    
-	    Column{
+
+	    Column {
 		width: parent.width
 		id: col
 		anchors {
@@ -195,160 +189,152 @@ Page {
 		    topMargin: 10
 		    top: parent.top
 		}
-		
-		
-		
-	    	 
+
 		Column {
 		    width: parent.width
 		    spacing: 10
-			  
-		      
+
+
 		    id: current
-		    Text{	
+		    Text {
 			text: "Current position data"
 			font.bold: true;
 			font.pixelSize: 26
 			verticalAlignment: Text.AlignVCenter
 		    }
-			  
-			
-		    
-		    Row{
-			Text{	
+
+		    Row {
+			Text {
 			    text: "Longitude: "
 			    font.pixelSize: 22
-			}					    
-			Text {         
+			}
+			Text {
 			    id: lbllon
 			    //text: positionSource.position.coordinate.longitude
 			    font.pixelSize: 22
-			}	
+			}
 		    }
-		    
-		    Row{
-			Text{	
+
+		    Row {
+			Text {
 			    text: "Latitude: "
 			    font.pixelSize: 22
-			}					    
-			Text {         
+			}
+			Text {
 			    id: lbllat
 			    //text: positionSource.position.coordinate.latitude
 			    font.pixelSize: 22
-			}	
-		    }   
-		    
-		    Row{
-			Text{	
+			}
+		    }
+
+		    Row {
+			Text {
 			    text: "Altitude: "
 			    font.pixelSize: 22
-			}					    
-			Text {         
+			}
+			Text {
 			    id: lblalt
-// 			    text: positionSource.position.coordinate.altitude
+                            // text: positionSource.position.coordinate.altitude
 			    font.pixelSize: 22
-			}	
+			}
 		    }
-		    
-		    Row{
-			Text{	
+
+		    Row {
+			Text {
 			    text: "Speed: "
 			    font.pixelSize: 22
-			}					    
-			Text {         
+			}
+			Text {
 			    id: lblspeed
-// 			    text: positionSource.position.speed
+                            // text: positionSource.position.speed
 			    font.pixelSize: 22
-			}	
+			}
 		    }
-		    
-		    /*Row{
-			Text{	
+
+		    /*Row {
+			Text {
 			    text: "Time: "
 			    font.pixelSize: 22
-			}					    
-			Text {         
+			}
+			Text {
 			    id: lbltime
 			    text: positionSource.position.timestamp
 			    font.pixelSize: 22
-			}	
+			}
 		    }*/
-		    
-		      
-			
-		    
+
 		}
-		
+
 		Column {
 		    width: parent.width
-		    spacing: 20  
-			  			  
-		    Rectangle{
+		    spacing: 20
+
+		    Rectangle {
 			id: separator
 			height: 1
 			width: parent.width - 20
 			color: "green"
 		    }
-			  
-		    Row{
+
+		    Row {
 			id: record
-			Text{	
+			Text {
 			    text: "Record"
 			    font.bold: true;
 			    font.pixelSize: 26
 			    verticalAlignment: Text.AlignVCenter
 			}
-		    } 
-		        
-		    
-		    Row{
+		    }
+
+
+		    Row {
 			id:name
 			width: parent.width
-			Text{
+			Text {
 			    id: lblname2
 			    text: "Name: "
 			    font.bold: true;
 			    font.pixelSize: 22
 			    verticalAlignment: Text.AlignVCenter
 			    height: txtname.height
-			}					    
-			TextField {         
+			}
+			TextField {
 			    id: txtname
-// 			    validator: IntValidator{bottom: 1; top: 31;}
+// 			    validator: IntValidator {bottom: 1; top: 31;}
 // 			    inputMethodHints: Qt.ImhDigitsOnly | Qt.ImhNoPredictiveText
-			    height: 50			    
+			    height: 50
 			    width: parent.width - lblname2.width - 20
 			}
-			Text{
+			Text {
 			    id: lblname
 			    font.bold: true;
 			    font.pixelSize: 22
 			    verticalAlignment: Text.AlignVCenter
-			    height: 50			    
+			    height: 50
 			    width: parent.width - lblname2.width - 20
 			    visible: false
 			}
 		    }
-		    
-		    Row{
+
+		    Row {
 			id:interval
 			width: parent.width
-			Text{	
+			Text {
 			    id: lblinterval
 			    text: "Interval: "
 			    font.bold: true;
 			    font.pixelSize: 22
 			    verticalAlignment: Text.AlignVCenter
 			    height: binterval.height
-			}			
-			
-			/*Text { 
+			}
+
+			/*Text {
 			    id: txtinterval
-			    text: binterval.text 
+			    text: binterval.text
 			    font.bold: true;
 			    font.pixelSize: 22
 			    verticalAlignment: Text.AlignVCenter
-			    height: slinterval.height	  
+			    height: slinterval.height
 			}*/
 
 			/*Slider {
@@ -361,7 +347,7 @@ Page {
 			    value: 1
 			    width: parent.width - lblinterval.width - txtinterval.width - 10
 			}*/
-			Button{	
+			Button {
 			    id: binterval
 			    text: "1 second"
 			    font.bold: true;
@@ -371,13 +357,13 @@ Page {
 			      dialoginterval.open();
 			    }
 			}
-			
+
 		    }
-		    
-		    Row{
+
+		    Row {
 			id:buttons
 			width: parent.width
-			Button{	
+			Button {
 			    id: bstart
 			    text: "Start"
 			    font.bold: true;
@@ -385,8 +371,8 @@ Page {
 			    width: parent.width / 2 - 12
 			    onClicked: {
 // 				console.log("start")
-				var r = qml_to_python.start(txtname.text, timerrecord.interval)				
-				if(r != ""){ //ok
+				var r = qml_to_python.start(txtname.text, timerrecord.interval)
+				if(r != "") { //ok
 				  bstart.enabled = false
 				  bstop.enabled = true
 // 				  bwaypoint.enabled = true
@@ -401,15 +387,15 @@ Page {
 				  waypoint = 0
 				  mapPage.remove_all_point()
 				}
-				else{ //failed
+				else { //failed
 				  console.log("start failed")
 				  //ToDo: show error
 				}
 			    }
 			}
 			Label {width:  5; height: 1} //spacer
-			
-			Button{	
+
+			Button {
 			    id: bstop
 			    text: "Stop"
 			    font.bold: true;
@@ -419,13 +405,13 @@ Page {
 			    onClicked: {
 			      dialogstop.open();
 			    }
-			}			
-			
+			}
+
 		    }
-		    
-// 		    Row{
+
+// 		    Row {
 // 			width: parent.width
-// 			Button{	
+// 			Button {
 // 			    id: bwaypoint
 // 			    text: "Add waypoint"
 // 			    font.bold: true;
@@ -437,27 +423,27 @@ Page {
 // 			      bwaypoint = " Add waypoint (" + waypoint + ")"
 // 			      qml_to_python.addwaypoint(positionSource.position.coordinate.longitude, positionSource.position.coordinate.latitude, positionSource.position.coordinate.altitude, positionSource.position.speed, waypoint)
 // 			    }
-// 			}		 
+// 			}
 // 		    }
-		    
-		    Row{
+
+		    Row {
 			width: parent.width
-			Text{	
+			Text {
 			    id: lblsamples
 			    font.bold: true;
 			    font.pixelSize: 22
-			}		
+			}
 		    }
-		    
+
 		}
-		
+
 	    }
 	}
 
     }
 
-   
-    
+
+
 //*******************************************************
 
     QueryDialog {
@@ -467,7 +453,7 @@ Page {
         message: "Do you really want to stop recording?"
 	acceptButtonText: "Yes"
 	rejectButtonText : "No"
-	onAccepted: { 
+	onAccepted: {
 	  //console.log("stop")
 	  bstart.enabled = true
 	  bstop.enabled = false
@@ -499,7 +485,7 @@ Page {
             ListElement { name: "5 minutes";  value: 300000 }
             ListElement { name: "10 minutes"; value: 600000 }
         }
-        onAccepted: { 
+        onAccepted: {
 	  binterval.text = dialoginterval.model.get(dialoginterval.selectedIndex).name
 	  timerrecord.interval = dialoginterval.model.get(dialoginterval.selectedIndex).value
 	}
@@ -511,8 +497,8 @@ Page {
 
     ToolBarLayout {
 	id: toolbar
-	
-	ToolButtonRow {  
+
+	ToolButtonRow {
 	  ToolButton {
                 id: bshowmap
                 text: "Show map"
@@ -525,24 +511,24 @@ Page {
 
 
 //  var coord = Qt.createQmlObject()
-   
-   
+
+
 // 		    pageLoader.source = "MapPage.qml"
 // 		    pageStack.push(pageLoader)
 
 // mapPage = Qt.createComponent("MapPage.qml");
 // pageStack.push(mapPage)
-		    
+
                 }
-            }	    
-	}	      
-	    
+            }
+	}
+
 	ToolIcon {
 	    iconId: "toolbar-view-menu" ;
 	    onClicked: myMenu.open();
 	}
-    }    
-   
+    }
+
 
 //*******************************************************
 
@@ -557,13 +543,3 @@ Page {
 //*******************************************************
 
 }
-
-
-
-
-
-
-
-
-
-
