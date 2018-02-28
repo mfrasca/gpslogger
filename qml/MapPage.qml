@@ -46,20 +46,21 @@ Page {
         width: parent.width
         height: parent.height
 
-        //Plugin {
-        //    id: mapplugin
-        //    name: "osm"
-        //    PluginParameter { name: "osm.useragent"; value: "ghini.tour" }
-        //    PluginParameter { name: "osm.mapping.host"; value: "http://c.tile.openstreetmap.org/" }
-        //    PluginParameter { name: "osm.mapping.copyright"; value: "(c)" }
-        //}
+        /*
+        Plugin {
+            id: mapplugin
+            name: "osm"
+            PluginParameter { name: "osm.useragent"; value: "ghini.tour" }
+            PluginParameter { name: "osm.mapping.host"; value: "http://c.tile.openstreetmap.org/" }
+            PluginParameter { name: "osm.mapping.copyright"; value: "(c)" }
+        }
         Plugin {
                   id: mapplugin
                   name : "nokia"
                   PluginParameter { name: "app_id"; value: "7FyznCdyZb5pU0pzECvK" } //https://api.developer.nokia.com/ovi-api/ui/registration?action=list
                   PluginParameter { name: "token"; value: "KVFpgX3oovrK7-VvV0g6OA" }
                 }
-
+        */
 
         Item {
             id: myMapRoot
@@ -94,14 +95,14 @@ Page {
 
             Map {
                 id: map
-                 anchors.fill: parent
+                anchors.fill: parent
                 anchors.top: titlebar.bottom
                 anchors.margins: -80
                 zoomLevel: 16
 
-//                 plugin: Plugin {
-//                   name : "nokia"
-//                 }
+                plugin: Plugin {
+                    name : "nokia"
+                }
                 //center: positionSource.position.coordinate
 
                 onZoomLevelChanged: {

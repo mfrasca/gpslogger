@@ -6,13 +6,14 @@ import "." as MyComponents
 
 
 Page {
-//   orientationLock: PageOrientation.LockLandscape
-//     orientationLock: PageOrientation.LockPortrait
+    // orientationLock: PageOrientation.LockLandscape
+    // orientationLock: PageOrientation.LockPortrait
 
 
-    //We want to tell Python whenever our display orientation changes
-    //This is done with the signal "onWidthChanged".
-    //This how ever is not called at start up, because of that we also use a sigle shot timer
+    // We want to tell Python whenever our display orientation changes.
+    // This is done with the signal "onWidthChanged".  This however is not
+    // called at start up, so we also use a single shot timer.
+    
     onWidthChanged: {
         displayOrientationChanged()
     }
@@ -61,7 +62,6 @@ Page {
         }
     }
 
-
     function convertDecDeg(value, tipo) {
         if (!tipo)
             tipo='N';
@@ -85,16 +85,8 @@ Page {
     property int points: 0
     property int waypoint_no: 0
 
-    // property variant mapPage: ""
-
-
-//*******************************************************
-
-
     id: mainPage
     tools: toolbar
-
-    // anchors.margins: 10
 
     Item {
         id: page
@@ -247,18 +239,6 @@ Page {
                         }
                     }
 
-                    /*Row {
-                        Text {
-                            text: "Time: "
-                            font.pixelSize: 22
-                        }
-                        Text {
-                            id: lbltime
-                            text: positionSource.position.timestamp
-                            font.pixelSize: 22
-                        }
-                    }*/
-
                 }
 
                 Column {
@@ -407,19 +387,19 @@ Page {
 
                     }
 
-                     Row {
-                         width: parent.width
-                         Button {
-                             id: bwaypoint
-                             text: "Add waypoint"
-                             font.bold: true;
-                             font.pixelSize: 26
-                             width: parent.width -20
-                             enabled: false
-                             onClicked: {
-                                 waypoint_no = waypoint_no + 1
-                                 bwaypoint.text = " Add waypoint (" + waypoint_no + ")"
-                                 qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
+                    Row {
+                        width: parent.width
+                        Button {
+                            id: bwaypoint
+                            text: "Add waypoint"
+                            font.bold: true;
+                            font.pixelSize: 26
+                            width: parent.width -20
+                            enabled: false
+                            onClicked: {
+                                waypoint_no = waypoint_no + 1
+                                bwaypoint.text = " Add waypoint (" + waypoint_no + ")"
+                                qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
                                                            positionSource.position.coordinate.latitude,
                                                            positionSource.position.coordinate.altitude,
                                                            positionSource.position.speed,
