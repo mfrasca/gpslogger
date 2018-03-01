@@ -71,7 +71,7 @@ Page {
             property variant itemsModel
             signal viewportChanged(variant from, variant to)
             anchors.fill: parent
-            anchors.top: titlebar.bottom
+            anchors.top: parent.top
             onOpacityChanged: {
                 if (opacity == 1) {
                     updateViewport();
@@ -96,7 +96,7 @@ Page {
             Map {
                 id: map
                 anchors.fill: parent
-                anchors.top: titlebar.bottom
+                anchors.top: parent.top
                 anchors.margins: -80
                 zoomLevel: 16
 

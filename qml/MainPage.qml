@@ -6,9 +6,7 @@ import "." as MyComponents
 
 
 Page {
-    // orientationLock: PageOrientation.LockLandscape
-    // orientationLock: PageOrientation.LockPortrait
-
+    id: mainPage
 
     // We want to tell Python whenever our display orientation changes.
     // This is done with the signal "onWidthChanged".  This however is not
@@ -47,7 +45,7 @@ Page {
     }
 
     Timer {
-        id: timerrecord;
+        id: timerrecord
         interval: dialoginterval.model.get(1).value;
         running: true;
         repeat: true;
@@ -95,7 +93,6 @@ Page {
     property int points: 0
     property int waypoint_no: 0
 
-    id: mainPage
     tools: toolbar
 
     Item {
@@ -174,12 +171,12 @@ Page {
             anchors.top: titlebar.bottom
             height: mainPage.height - titlebar.height
             contentWidth: parent.width
-            contentHeight: col.height + 20
+            contentHeight: current.height + 20
             clip: true
 
             Column {
+                id: current
                 width: parent.width
-                id: col
                 anchors {
                     left: parent.left
                     leftMargin: 10
@@ -188,273 +185,268 @@ Page {
                     top: parent.top
                 }
 
-                Column {
-                    width: parent.width
-                    spacing: 10
+                spacing: 10
 
-                    id: current
+                Text {
+                    id: txtcurrentlabel
+                    text: "Current position data"
+                    font.bold: true;
+                    font.pixelSize: 26
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                Row {
+                    id: rowlongitude
+                    anchors {
+                        left: parent.left
+                        top: txtcurrentlabel.bottom
+                        topMargin: 6
+                    }
                     Text {
-                        id: txtcurrentlabel
-                        text: "Current position data"
+                        text: "Longitude: "
+                        font.pixelSize: 22
+                    }
+                    Text {
+                        id: lbllon
+                        //text: positionSource.position.coordinate.longitude
+                        font.pixelSize: 22
+                    }
+                }
+
+                Row {
+                    id: rowlatitude
+                    anchors {
+                        left: parent.left
+                        top: rowlongitude.bottom
+                        topMargin: 6
+                    }
+                    Text {
+                        text: "Latitude: "
+                        font.pixelSize: 22
+                    }
+                    Text {
+                        id: lbllat
+                        //text: positionSource.position.coordinate.latitude
+                        font.pixelSize: 22
+                    }
+                }
+
+                Row {
+                    id: rowaltitude
+                    anchors {
+                        left: parent.left
+                        top: rowlatitude.bottom
+                        topMargin: 6
+                    }
+                    Text {
+                        text: "Altitude: "
+                        font.pixelSize: 22
+                    }
+                    Text {
+                        id: lblalt
+                        // text: positionSource.position.coordinate.altitude
+                        font.pixelSize: 22
+                    }
+                }
+
+                Row {
+                    id: rowspeed
+                    anchors {
+                        left: rowaltitude.left
+                        top: rowaltitude.bottom
+                        topMargin: 6
+                    }
+                    Text {
+                        text: "Speed: "
+                        font.pixelSize: 22
+                    }
+                    Text {
+                        id: lblspeed
+                        // text: positionSource.position.speed
+                        font.pixelSize: 22
+                    }
+                }
+
+                Rectangle {
+                    id: separator
+                    height: 1
+                    width: parent.width - 20
+                    color: "green"
+                    anchors {
+                        top: rowspeed.bottom
+                        topMargin: 6
+                    }
+                }
+
+                Row {
+                    id: rowname
+                    width: parent.width
+                    anchors {
+                        left: parent.left
+                        top: separator.bottom
+                        topMargin: 6
+                    }
+                    Text {
+                        id: lblfilename
+                        text: "Name: "
+                        font.bold: true
+                        font.pixelSize: 22
+                        verticalAlignment: Text.AlignVCenter
+                        height: txtfilename.height
+                    }
+                    TextField {
+                        id: txtfilename
+                        height: 50
+                        width: parent.width - lblfilename.width - 20
+                    }
+                    Text {
+                        id: lblrecording
+                        font.bold: true
+                        font.pixelSize: 22
+                        verticalAlignment: Text.AlignVCenter
+                        height: 50
+                        width: parent.width - lblfilename.width - 20
+                        visible: false
+                    }
+                }
+
+                Row {
+                    id: rowinterval
+                    width: parent.width
+                    anchors {
+                        right: parent.right
+                        top: rowname.bottom
+                        topMargin: 6
+                    }
+                    Text {
+                        id: lblinterval
+                        text: "Interval: "
+                        font.bold: true
+                        font.pixelSize: 22
+                        verticalAlignment: Text.AlignVCenter
+                        height: binterval.height
+                    }
+                    Button {
+                        id: binterval
+                        text: dialoginterval.model.get(1).name;
                         font.bold: true;
                         font.pixelSize: 26
-                        verticalAlignment: Text.AlignVCenter
-                    }
-
-                    Row {
-                        id: rowlongitude
-                        anchors {
-                            left: parent.left
-                            top: txtcurrentlabel.bottom
-                            topMargin: 6
-                        }
-                        Text {
-                            text: "Longitude: "
-                            font.pixelSize: 22
-                        }
-                        Text {
-                            id: lbllon
-                            //text: positionSource.position.coordinate.longitude
-                            font.pixelSize: 22
+                        width: parent.width - lblinterval.width - 20
+                        onClicked: {
+                            dialoginterval.open();
                         }
                     }
 
-                    Row {
-                        id: rowlatitude
-                        anchors {
-                            left: parent.left
-                            top: rowlongitude.bottom
-                            topMargin: 6
-                        }
-                        Text {
-                            text: "Latitude: "
-                            font.pixelSize: 22
-                        }
-                        Text {
-                            id: lbllat
-                            //text: positionSource.position.coordinate.latitude
-                            font.pixelSize: 22
-                        }
-                    }
+                }
 
-                    Row {
-                        id: rowaltitude
-                        anchors {
-                            left: parent.left
-                            top: rowlatitude.bottom
-                            topMargin: 6
-                        }
-                        Text {
-                            text: "Altitude: "
-                            font.pixelSize: 22
-                        }
-                        Text {
-                            id: lblalt
-                            // text: positionSource.position.coordinate.altitude
-                            font.pixelSize: 22
-                        }
-                    }
+                Row {
+                    id:buttons
+                    width: parent.width
 
-                    Row {
-                        id: rowspeed
-                        anchors {
-                            left: rowaltitude.left
-                            top: rowaltitude.bottom
-                            topMargin: 6
-                        }
-                        Text {
-                            text: "Speed: "
-                            font.pixelSize: 22
-                        }
-                        Text {
-                            id: lblspeed
-                            // text: positionSource.position.speed
-                            font.pixelSize: 22
-                        }
+                    anchors {
+                        top: rowinterval.bottom
+                        topMargin: 6
                     }
-
-                    Rectangle {
-                        id: separator
-                        height: 1
-                        width: parent.width - 20
-                        color: "green"
-                        anchors {
-                            top: rowspeed.bottom
-                            topMargin: 6
-                        }
-                    }
-
-                    Row {
-                        id: rowname
-                        width: parent.width
-                        anchors {
-                            left: parent.left
-                            top: separator.bottom
-                            topMargin: 6
-                        }
-                        Text {
-                            id: lblfilename
-                            text: "Name: "
-                            font.bold: true
-                            font.pixelSize: 22
-                            verticalAlignment: Text.AlignVCenter
-                            height: txtfilename.height
-                        }
-                        TextField {
-                            id: txtfilename
-                            height: 50
-                            width: parent.width - lblfilename.width - 20
-                        }
-                        Text {
-                            id: lblrecording
-                            font.bold: true
-                            font.pixelSize: 22
-                            verticalAlignment: Text.AlignVCenter
-                            height: 50
-                            width: parent.width - lblfilename.width - 20
-                            visible: false
-                        }
-                    }
-
-                    Row {
-                        id: rowinterval
-                        width: parent.width
-                        anchors {
-                            right: parent.right
-                            top: rowname.bottom
-                            topMargin: 6
-                        }
-                        Text {
-                            id: lblinterval
-                            text: "Interval: "
-                            font.bold: true
-                            font.pixelSize: 22
-                            verticalAlignment: Text.AlignVCenter
-                            height: binterval.height
-                        }
-                        Button {
-                            id: binterval
-                            text: dialoginterval.model.get(1).name;
-                            font.bold: true;
-                            font.pixelSize: 26
-                            width: parent.width - lblinterval.width - 20
-                            onClicked: {
-                                dialoginterval.open();
+                    Button {
+                        id: bstart
+                        text: "Start"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 5*2 - 6) / 3
+                        onClicked: {
+                            // console.log("start")
+                            var r = qml_to_python.start(txtfilename.text, timerrecord.interval)
+                            if(r != "") { //ok
+                                bstart.enabled = false
+                                bstop.enabled = true
+                                bpause.text = "Pause"
+                                bpause.enabled = true
+                                bwaypoint.enabled = true
+                                bwaypoint.text = "Add waypoint"
+                                txtfilename.enabled = false
+                                binterval.enabled = false
+                                txtfilename.visible = false
+                                lblrecording.visible = true
+                                lblrecording.text = r
+                                lblsamples.text = ""
+                                points = 0
+                                waypoint_no = 0
+                                mapPage.remove_all_point()
+                            } else { //failed
+                                console.log("start failed")
+                                //ToDo: show error
                             }
                         }
-
                     }
 
-                    Row {
-                        id:buttons
-                        width: parent.width
+                    Label {width: 5; height: 1} //spacer
 
-                        anchors {
-                            top: rowinterval.bottom
-                            topMargin: 6
+                    Button {
+                        id: bstop
+                        text: "Stop"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 5*2 - 6) / 3
+                        enabled: false
+                        onClicked: {
+                            dialogstop.open();
                         }
-                        Button {
-                            id: bstart
-                            text: "Start"
-                            font.bold: true;
-                            font.pixelSize: 26
-                            width: (parent.width - 5*2 - 6) / 3
-                            onClicked: {
-                                // console.log("start")
-                                var r = qml_to_python.start(txtfilename.text, timerrecord.interval)
-                                if(r != "") { //ok
-                                    bstart.enabled = false
-                                    bstop.enabled = true
-                                    bpause.text = "Pause"
-                                    bpause.enabled = true
-                                    bwaypoint.enabled = true
-                                    bwaypoint.text = "Add waypoint"
-                                    txtfilename.enabled = false
-                                    binterval.enabled = false
-                                    txtfilename.visible = false
-                                    lblrecording.visible = true
-                                    lblrecording.text = r
-                                    lblsamples.text = ""
-                                    points = 0
-                                    waypoint_no = 0
-                                    mapPage.remove_all_point()
-                                } else { //failed
-                                    console.log("start failed")
-                                    //ToDo: show error
-                                }
-                            }
-                        }
-                        
-                        Label {width: 5; height: 1} //spacer
-                        
-                        Button {
-                            id: bstop
-                            text: "Stop"
-                            font.bold: true;
-                            font.pixelSize: 26
-                            width: (parent.width - 5*2 - 6) / 3
-                            enabled: false
-                            onClicked: {
-                                dialogstop.open();
-                            }
-                        }
-                        
-                        Label {width: 5; height: 1} //spacer
-                        
-                        Button {
-                            id: bpause
-                            text: "Pause"
-                            font.bold: true;
-                            font.pixelSize: 26
-                            width: (parent.width - 5*2 - 6) / 3
-                            enabled: false
-                            onClicked: {
-                                if(bpause.text == "Pause") {
-                                    qml_to_python.pause()
-                                    bpause.text = "Resume"
-                                } else {
-                                    qml_to_python.resume()
-                                    bpause.text = "Pause"
-                                }
-                            }
-                        }
-
                     }
 
-                    Row {
-                        width: parent.width
-                        anchors {
-                            top: buttons.bottom
-                            topMargin: 6
+                    Label {width: 5; height: 1} //spacer
+
+                    Button {
+                        id: bpause
+                        text: "Pause"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 5*2 - 6) / 3
+                        enabled: false
+                        onClicked: {
+                            if(bpause.text == "Pause") {
+                                qml_to_python.pause()
+                                bpause.text = "Resume"
+                            } else {
+                                qml_to_python.resume()
+                                bpause.text = "Pause"
+                            }
                         }
-                        Button {
-                            id: bwaypoint
-                            text: "Add waypoint"
-                            font.bold: true;
-                            font.pixelSize: 26
-                            width: parent.width -20
-                            enabled: false
-                            onClicked: {
-                                waypoint_no = waypoint_no + 1
-                                bwaypoint.text = "Add waypoint (" + waypoint_no + ")"
-                                qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
-                                                           positionSource.position.coordinate.latitude,
-                                                           positionSource.position.coordinate.altitude,
-                                                           positionSource.position.speed,
-                                                           waypoint_no)
-                             }
+                    }
+
+                }
+
+                Row {
+                    width: parent.width
+                    anchors {
+                        top: buttons.bottom
+                        topMargin: 6
+                    }
+                    Button {
+                        id: bwaypoint
+                        text: "Add waypoint"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: parent.width -20
+                        enabled: false
+                        onClicked: {
+                            waypoint_no = waypoint_no + 1
+                            bwaypoint.text = "Add waypoint (" + waypoint_no + ")"
+                            qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
+                                                       positionSource.position.coordinate.latitude,
+                                                       positionSource.position.coordinate.altitude,
+                                                       positionSource.position.speed,
+                                                       waypoint_no)
                          }
                      }
+                 }
 
-                    Row {
-                        width: parent.width
-                        Text {
-                            id: lblsamples
-                            font.bold: true;
-                            font.pixelSize: 22
-                        }
+                Row {
+                    width: parent.width
+                    Text {
+                        id: lblsamples
+                        font.bold: true;
+                        font.pixelSize: 22
                     }
-
                 }
 
             }
