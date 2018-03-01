@@ -19,6 +19,9 @@ have some basic unix knowledge.
 The map page does not work, not in the original (it needs nokia map which
 isn't there any more), not here (I don't know how to link to OSM).
 
+.. image:: ss-landscape.png
+.. image:: ss-portrait.png
+
 longish version
 ------------------
 
