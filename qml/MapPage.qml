@@ -8,10 +8,10 @@ Page {
   property double meter_per_pixel: 0
 
 
-  function centermyposition() { //sets my position, but only once (do not update automatically)
-      var coord = Qt.createQmlObject('import QtMobility.location 1.1; Coordinate {latitude:' + positionSource.position.coordinate.latitude + ';longitude:' + positionSource.position.coordinate.longitude + ';}', positionSource, "coord");
-      map.center = coord;
-      myMapRoot.updateViewport()
+    function centermyposition() { // sets my position, but only once (do not update automatically)
+        var coord = Qt.createQmlObject('import QtMobility.location 1.1; Coordinate {latitude:' + positionSource.position.coordinate.latitude + ';longitude:' + positionSource.position.coordinate.longitude + ';}', positionSource, "coord");
+        map.center = coord;
+        myMapRoot.updateViewport()
   }
 
   function add_point(pos) {
@@ -20,14 +20,14 @@ Page {
   }
 
   function remove_all_point() {
-    while(polyline.path.length > 0) { //dirty workaround
-      console.log(polyline.path.length)
-        for (var index = 0; index < polyline.path.length; index++) {
-          polyline.removeCoordinate(polyline.path[0])
+      while(polyline.path.length > 0) { // dirty workaround
+          console.log(polyline.path.length)
+          for (var index = 0; index < polyline.path.length; index++) {
+              polyline.removeCoordinate(polyline.path[0])
+          }
+          console.log("Polyline cleared", polyline.path.length)
       }
-      console.log("Polyline cleared", polyline.path.length)
-    }
-    myMapRoot.updateViewport()
+      myMapRoot.updateViewport()
   }
 
   function setmapplugin() {
@@ -36,7 +36,7 @@ Page {
   }
 
 
-//*******************************************************
+    // *******************************************************
 
     id: mapPage
     tools: toolbar
@@ -57,7 +57,7 @@ Page {
         Plugin {
                   id: mapplugin
                   name : "nokia"
-                  PluginParameter { name: "app_id"; value: "7FyznCdyZb5pU0pzECvK" } //https://api.developer.nokia.com/ovi-api/ui/registration?action=list
+                  PluginParameter { name: "app_id"; value: "7FyznCdyZb5pU0pzECvK" } // https://api.developer.nokia.com/ovi-api/ui/registration?action=list
                   PluginParameter { name: "token"; value: "KVFpgX3oovrK7-VvV0g6OA" }
                 }
         */
@@ -84,13 +84,13 @@ Page {
                             map.toCoordinate(Qt.point(map.size.width + map.anchors.rightMargin,
                                                       map.size.height + map.anchors.bottomMargin)))
 
-                //calculate meter per pixel (very ugly!)
+                // calculate meter per pixel (very ugly!)
                 coord1 = map.toCoordinate(Qt.point(-map.anchors.leftMargin,-map.anchors.topMargin))
                 coord2 = map.toCoordinate(Qt.point(map.size.width + map.anchors.rightMargin,-map.anchors.topMargin))
                 dist = Math.round(coord1.distanceTo(coord2))
                 console.log(dist, dist/map.size.width)
                 meter_per_pixel = dist/map.size.width
-//                 myPosition.radius = meter_per_pixel*20
+                // myPosition.radius = meter_per_pixel*20
             }
 
             Map {
@@ -103,7 +103,7 @@ Page {
                 plugin: Plugin {
                     name : "nokia"
                 }
-                //center: positionSource.position.coordinate
+                // center: positionSource.position.coordinate
 
                 onZoomLevelChanged: {
                     myMapRoot.updateViewport()
@@ -131,7 +131,7 @@ Page {
                 /*Landmark {
                     id: myLandmark
                     name: "my Position"
-//                     iconSource: "../img/icon_80.png"
+                    // iconSource: "../img/icon_80.png"
                     iconSource: "toolbar-back"
                     coordinate: positionSource.position.coordinate
                     radius: meter_per_pixel*15
@@ -211,7 +211,7 @@ Page {
 
     }
 
-//*******************************************************
+    // *******************************************************
 
 
 
@@ -263,14 +263,14 @@ Page {
     }
 
 
-//*******************************************************
-//*******************************************************
-//     Component.onCompleted: {
-//         //map.size.width = page.width - 20
-// //        map.size.height = map.size.width //500 //page.height - 20
-//         console.log("MapPage loaded")
-//         centermyposition()
-//     }
-//*******************************************************
+    // *******************************************************
+    // *******************************************************
+    //      Component.onCompleted: {
+    //          // map.size.width = page.width - 20
+    //          // map.size.height = map.size.width // 500 // page.height - 20
+    //          console.log("MapPage loaded")
+    //          centermyposition()
+    //      }
+    // *******************************************************
 
 }
