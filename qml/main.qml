@@ -4,16 +4,12 @@ import com.nokia.meego 1.0
 PageStackWindow {
     id: appWindow
 
-
     function show_Opt_In() {
         dialog_Opt_In.open()
     }
 
-
-
     initialPage: mainPage
     MainPage {id: mainPage}
-
 
     Menu {
         id: myMenu
@@ -31,8 +27,6 @@ PageStackWindow {
         }
     }
 
-
-
     QueryDialog {
         id: about
         icon: "../img/icon_80.png"
@@ -45,7 +39,6 @@ PageStackWindow {
         acceptButtonText: "Ok"
     }
 
-
     QueryDialog {
         id: help
         icon: "../img/icon_80.png"
@@ -53,7 +46,6 @@ PageStackWindow {
         message: "The tracks will be saved in MyDocs/GPS-Logger."
         acceptButtonText: "Ok"
     }
-
 
     QueryDialog {
         id: dialog_Opt_In
@@ -69,6 +61,4 @@ PageStackWindow {
             qml_to_python.Opt_In(false)
         }
     }
-
-
 }
