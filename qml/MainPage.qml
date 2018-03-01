@@ -8,10 +8,11 @@ import "." as MyComponents
 Page {
     id: mainPage
 
-    // We want to tell Python whenever our display orientation changes.
-    // This is done with the signal "onWidthChanged".  This however is not
-    // called at start up, so we also use a single shot timer.
-    
+    // The layout here is for portrait, there are settings we need to change
+    // for landscape.  We react on display orientation changes, that's the
+    // signal "onWidthChanged".  To make sure this is called at start up, we
+    // use a single shot timer, after 1ms.
+
     onWidthChanged: {
         displayOrientationChanged()
     }
@@ -25,7 +26,6 @@ Page {
         }
     }
 
-    //Tell Python that the display orientation changed
     function displayOrientationChanged() {
         if (width > 600) { // landscape
             rowaltitude.anchors.left = current.horizontalCenter
@@ -75,18 +75,15 @@ Page {
             tipo='N';
         if (!value) {
             return "-";
-        } else if (value > 180 || value < 0) {
-            // convert coordinate from north to south or east to west if wrong tipo
+        } else if (value > 180) {  // it's a longitude and we swap E/W
+            return convertDecDeg(360.0-value, (tipo=='E'?'W':'E'));
+        } else if (value < 0) {  // swap N/S and E/W
             return convertDecDeg(-value, (tipo=='N'?'S': (tipo=='E'?'W':tipo) ));
         } else {
-            var gpsdeg = parseInt(value);
-            var remainder = value - (gpsdeg * 1.0);
-            var gpsmin = remainder * 60.0;
-            var D = gpsdeg;
-            var M = parseInt(gpsmin);
-            var remainder2 = gpsmin - (parseInt(gpsmin)*1.0);
-            var S = parseInt(remainder2*60.0);
-            return tipo + " " + D + "° " +  Math.round(gpsmin * 1000) / 1000
+            var gpsdegrees = parseInt(value);
+            var remainder = value - (gpsdegrees * 1.0);
+            var gpsminutes = remainder * 60.0;
+            return tipo + " " + gpsdegrees + "° " + gpsminutes.toFixed(3) + "’"
         }
     }
 
@@ -101,9 +98,8 @@ Page {
 
         PositionSource {
             id: positionSource
-            updateInterval: 1000
+            updateInterval: 1000  // update screen once per second, this is not logging.
             active: true
-            // nmeaSource: "nmealog.txt"
             onPositionChanged: {
 
                 if(positionSource.position.longitudeValid) {
@@ -116,13 +112,12 @@ Page {
 
                 if(positionSource.position.altitudeValid) {
                     lblalt.text = Math.round(positionSource.position.coordinate.altitude) + " m"
-                } else {
-                    // lblalt.text = "-"
-                }
+                } // my GPS gives a valid altitude every two readings.
 
                 if(positionSource.position.speedValid) {
                     lblspeed.text = Math.round(positionSource.position.speed * 100) / 100 + " m/s (" +  Math.round(positionSource.position.speed * 360) / 100 + " km/h)"
                 } else {
+                    lblalt.text = "[2D fix]"
                     lblspeed.text = ""
                 }
 
