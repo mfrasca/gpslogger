@@ -30,8 +30,18 @@ Page {
     //Tell Python that the display orientation changed
     function displayOrientationChanged() {
         if (width > 600) { // landscape
+            rowaltitude.anchors.left = current.horizontalCenter
+            rowaltitude.anchors.top = txtcurrentlabel.bottom
+            rowname.anchors.right = current.horizontalCenter
+            rowinterval.anchors.left = current.horizontalCenter
+            rowinterval.anchors.top = separator.bottom
             console.log("[QML INFO] Landscape")
         } else { // portrait
+            rowaltitude.anchors.left = rowlongitude.left
+            rowaltitude.anchors.top = rowlatitude.bottom
+            rowname.anchors.right = current.right
+            rowinterval.anchors.left = current.left
+            rowinterval.anchors.top = rowname.bottom
             console.log("[QML INFO] Portrait")
         }
     }
@@ -130,7 +140,7 @@ Page {
 
             Rectangle {
                 anchors.fill: parent
-                color: "green";
+                color: "green"
             }
             //Row {
             Image {
@@ -182,9 +192,9 @@ Page {
                     width: parent.width
                     spacing: 10
 
-
                     id: current
                     Text {
+                        id: txtcurrentlabel
                         text: "Current position data"
                         font.bold: true;
                         font.pixelSize: 26
@@ -192,6 +202,12 @@ Page {
                     }
 
                     Row {
+                        id: rowlongitude
+                        anchors {
+                            left: parent.left
+                            top: txtcurrentlabel.bottom
+                            topMargin: 6
+                        }
                         Text {
                             text: "Longitude: "
                             font.pixelSize: 22
@@ -204,6 +220,12 @@ Page {
                     }
 
                     Row {
+                        id: rowlatitude
+                        anchors {
+                            left: parent.left
+                            top: rowlongitude.bottom
+                            topMargin: 6
+                        }
                         Text {
                             text: "Latitude: "
                             font.pixelSize: 22
@@ -216,6 +238,12 @@ Page {
                     }
 
                     Row {
+                        id: rowaltitude
+                        anchors {
+                            left: parent.left
+                            top: rowlatitude.bottom
+                            topMargin: 6
+                        }
                         Text {
                             text: "Altitude: "
                             font.pixelSize: 22
@@ -228,6 +256,12 @@ Page {
                     }
 
                     Row {
+                        id: rowspeed
+                        anchors {
+                            left: rowaltitude.left
+                            top: rowaltitude.bottom
+                            topMargin: 6
+                        }
                         Text {
                             text: "Speed: "
                             font.pixelSize: 22
@@ -239,72 +273,67 @@ Page {
                         }
                     }
 
-                }
-
-                Column {
-                    width: parent.width
-                    spacing: 20
-
                     Rectangle {
                         id: separator
                         height: 1
                         width: parent.width - 20
                         color: "green"
-                    }
-
-                    Row {
-                        id: record
-                        Text {
-                            text: "Record"
-                            font.bold: true;
-                            font.pixelSize: 26
-                            verticalAlignment: Text.AlignVCenter
+                        anchors {
+                            top: rowspeed.bottom
+                            topMargin: 6
                         }
                     }
 
-
                     Row {
-                        id:name
+                        id: rowname
                         width: parent.width
+                        anchors {
+                            left: parent.left
+                            top: separator.bottom
+                            topMargin: 6
+                        }
                         Text {
-                            id: lblname2
+                            id: lblfilename
                             text: "Name: "
-                            font.bold: true;
+                            font.bold: true
                             font.pixelSize: 22
                             verticalAlignment: Text.AlignVCenter
-                            height: txtname.height
+                            height: txtfilename.height
                         }
                         TextField {
-                            id: txtname
-//                             validator: IntValidator {bottom: 1; top: 31;}
-//                             inputMethodHints: Qt.ImhDigitsOnly | Qt.ImhNoPredictiveText
+                            id: txtfilename
                             height: 50
-                            width: parent.width - lblname2.width - 20
+                            width: parent.width - lblfilename.width - 20
                         }
                         Text {
-                            id: lblname
-                            font.bold: true;
+                            id: lblrecording
+                            font.bold: true
                             font.pixelSize: 22
                             verticalAlignment: Text.AlignVCenter
                             height: 50
-                            width: parent.width - lblname2.width - 20
+                            width: parent.width - lblfilename.width - 20
                             visible: false
                         }
                     }
 
                     Row {
-                        id:interval
+                        id: rowinterval
                         width: parent.width
+                        anchors {
+                            right: parent.right
+                            top: rowname.bottom
+                            topMargin: 6
+                        }
                         Text {
                             id: lblinterval
                             text: "Interval: "
-                            font.bold: true;
+                            font.bold: true
                             font.pixelSize: 22
                             verticalAlignment: Text.AlignVCenter
                             height: binterval.height
                         }
                         Button {
-                            id: binterval;
+                            id: binterval
                             text: dialoginterval.model.get(1).name;
                             font.bold: true;
                             font.pixelSize: 26
@@ -320,6 +349,10 @@ Page {
                         id:buttons
                         width: parent.width
 
+                        anchors {
+                            top: rowinterval.bottom
+                            topMargin: 6
+                        }
                         Button {
                             id: bstart
                             text: "Start"
@@ -328,18 +361,19 @@ Page {
                             width: (parent.width - 5*2 - 6) / 3
                             onClicked: {
                                 // console.log("start")
-                                var r = qml_to_python.start(txtname.text, timerrecord.interval)
+                                var r = qml_to_python.start(txtfilename.text, timerrecord.interval)
                                 if(r != "") { //ok
                                     bstart.enabled = false
                                     bstop.enabled = true
                                     bpause.text = "Pause"
                                     bpause.enabled = true
                                     bwaypoint.enabled = true
-                                    txtname.enabled = false
+                                    bwaypoint.text = "Add waypoint"
+                                    txtfilename.enabled = false
                                     binterval.enabled = false
-                                    txtname.visible = false
-                                    lblname.visible = true
-                                    lblname.text = r
+                                    txtfilename.visible = false
+                                    lblrecording.visible = true
+                                    lblrecording.text = r
                                     lblsamples.text = ""
                                     points = 0
                                     waypoint_no = 0
@@ -389,6 +423,10 @@ Page {
 
                     Row {
                         width: parent.width
+                        anchors {
+                            top: buttons.bottom
+                            topMargin: 6
+                        }
                         Button {
                             id: bwaypoint
                             text: "Add waypoint"
@@ -398,7 +436,7 @@ Page {
                             enabled: false
                             onClicked: {
                                 waypoint_no = waypoint_no + 1
-                                bwaypoint.text = " Add waypoint (" + waypoint_no + ")"
+                                bwaypoint.text = "Add waypoint (" + waypoint_no + ")"
                                 qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
                                                            positionSource.position.coordinate.latitude,
                                                            positionSource.position.coordinate.altitude,
@@ -442,10 +480,10 @@ Page {
             bpause.text = "Pause"
             bstop.enabled = false
             bwaypoint.enabled = false
-            txtname.enabled = true
+            txtfilename.enabled = true
             binterval.enabled = true
-            txtname.visible = true
-            lblname.visible = false
+            txtfilename.visible = true
+            lblrecording.visible = false
             qml_to_python.stop()
         }
     }
