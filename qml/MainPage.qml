@@ -101,7 +101,6 @@ Page {
             updateInterval: 1000  // update screen once per second, this is not logging.
             active: true
             onPositionChanged: {
-
                 if(positionSource.position.longitudeValid) {
                     lbllon.text = convertDecDeg(positionSource.position.coordinate.longitude, "E")
                 }
@@ -120,10 +119,11 @@ Page {
                     lblalt.text = "[2D fix]"
                     lblspeed.text = ""
                 }
-
+                if (positionSource.position.hasOwnProperty('timestamp')) {
+                    // do something with positionSource.position.timestamp
+                }
             }
         }
-
 
         Item {
             id: titlebar
@@ -134,7 +134,6 @@ Page {
                 anchors.fill: parent
                 color: "green"
             }
-            //Row {
             Image {
                 id: imggps
                 source: "../img/gps_256.png"
@@ -156,9 +155,7 @@ Page {
 
                 text: "GPS-Logger"
             }
-            // }
         }
-
 
         Flickable {
             id: flickable
