@@ -25,8 +25,10 @@ import ConfigParser
 
 from datetime import tzinfo, timedelta, datetime
 import logging
+logger = logging.getLogger(__name__)
 
 
+################################################################################################
 class GPSLoggerApp(QApplication):
     root = "/opt/gps-logger/"
     filehandle = None
@@ -52,9 +54,9 @@ class GPSLoggerApp(QApplication):
             with open(os.path.join(self.root, "version"), 'r') as file:
                 self.version = file.readline().strip()
                 self.build = file.readline().strip()
-                print "Version: %s-%s" % (self.version, self.build)
+                logger.info("Version: %s-%s" % (self.version, self.build))
         except:
-            print "Version file not found, please check your installation!"
+            logger.error("Version file not found, please check your installation!")
 
         self.config = Configuration()
         self.gpx = GPX()
@@ -62,12 +64,12 @@ class GPSLoggerApp(QApplication):
     def finished(self):
         self.config.write()
         if(self.gpx.recording == True):
-            logging.info("we are still recording, close file properly")
+            logger.info("we are still recording, close file properly")
             self.gpx.stop_recording()
-        logging.debug("Closed")
+        logger.debug("Closed")
 
     def does_opt_in(self):
-        logging.info("config.opt_in:", self.config.opt_in)
+        logger.info("config.opt_in:", self.config.opt_in)
         return self.config.opt_in
 
     @Slot(str, int, result=str)
@@ -76,7 +78,7 @@ class GPSLoggerApp(QApplication):
 
     @Slot()
     def stop(self):
-        # print "stop"
+        logger.debug("stop")
         self.gpx.stop_recording()
 
     @Slot()
@@ -90,12 +92,12 @@ class GPSLoggerApp(QApplication):
 
     @Slot(float, float, float, float)
     def add_point(self, lon, lat, alt, speed):
-        # print "recording", lon, lat, alt, speed, time
+        logger.debug("recording point - lon:%s lat:%s alt:%s speed:%s time:%s" % (lon, lat, alt, speed, time))
         self.gpx.add_entry(lon, lat, alt, speed)
 
     @Slot(float, float, float, float, str)
     def add_waypoint(self, lon, lat, alt, speed, waypoint):
-        # print "recording", lon, lat, alt, speed, time
+        logger.debug("recording waypoint - lon:%s lat:%s alt:%s speed:%s time:%s" % (lon, lat, alt, speed, time))
         self.gpx.add_waypoint(lon, lat, alt, speed, waypoint)
 
     @Slot(result=str)
@@ -107,7 +109,7 @@ class GPSLoggerApp(QApplication):
         self.opt_in = v
         if(v is False):
             config.write()
-            print "We have to quit now, sry"
+            logger.warn("We have to quit now, so sorry")
             quit()
 
 
@@ -121,12 +123,12 @@ class Configuration():
         self.configpath = os.path.join(QDS.storageLocation(QDS.DataLocation), "GPS-Logger")
         self.configfile = self.configpath + "/" + self.configfile
 
-        print "Loading configuration from:", self.configfile
+        logger.debug("Loading configuration from: %s" % self.configfile)
         self.ConfigParser = ConfigParser.SafeConfigParser()
         try:
             self.ConfigParser.read(self.configfile)
         except:  # use default config
-            print "Configuration file " + self.configfile + " not existing or not compatible"
+            logger.warn("Configuration file %s not existing or not compatible" % self.configfile)
         try:
             self.ConfigParser.add_section('main')
         except:
@@ -134,13 +136,12 @@ class Configuration():
 
         try:
             self.opt_in = self.ConfigParser.getboolean("main", "opt_in")
-            print "Configuration loaded"
+            logger.debug("Configuration loaded")
         except:
-            print "Error loading configuration, using default value"
+            logger.error("Error loading configuration, using default value")
 
     def write(self):
-        print "Write configuration to:", self.configfile
-        # self.ConfigParser.add_section('main')
+        logger.debug("Write configuration to: %s" % self.configfile)
         self.ConfigParser.set('main', 'opt_in', str(self.opt_in))
 
         try:
@@ -151,13 +152,12 @@ class Configuration():
         try:
             with open(self.configfile, 'w') as handle:
                 self.ConfigParser.write(handle)
-            print "Configuration saved"
+            logger.debug("Configuration saved")
         except:
-            print "Failed to write configuration file!"
+            logger.error("Failed to write configuration file!")
 
 
 ################################################################################################
-
 class GPX():
     filehandle = None
     recording = False
@@ -178,7 +178,7 @@ class GPX():
                 full_filename = datapath + "/" + filename2
                 suffix = suffix + 1
 
-        print "Start recording", full_filename, interval
+        logger.info("Start recording %s %s" % (full_filename, interval))
         try:
             self.filehandle = open(full_filename, 'w')
             self.recording = True
@@ -208,7 +208,7 @@ class GPX():
             return filename2
 
         except:
-            print "failed to open file:", full_filename
+            logger.error("failed to open file: %s" % full_filename)
             return ""
 
     def start_new_segment(self):
@@ -218,13 +218,13 @@ class GPX():
     <trkseg>'''
             self.filehandle.write(txt)
         else:
-            print "file closed, can not write to it"
+            logger.error("file closed, can not write to it")
 
     def add_entry(self, lon, lat, alt, speed):
         if(self.recording is True):
             if self.paused:
                 return
-            # print "adding entry"
+            logger.debug("adding entry")
 
             tt = datetime.utcnow().timetuple()  # time in UTC
             try:
@@ -243,17 +243,17 @@ class GPX():
 
             self.filehandle.write(txt)
         else:
-            print "file closed, can not add entry"
+            logger.warn("file closed, can not add entry")
 
     def add_waypoint(self, lon, lat, alt, speed, waypoint):
         if(self.recording is True):
             t = "%d-%02d-%02dT%02d:%02d:%02dZ" % datetime.utcnow().timetuple()[:6]
             self.waypoints.append({'lat': lat, 'lon': lon, 'ele': alt, 'time': t, 'name': waypoint})
         else:
-            print "file closed, can not add entry"
+            logger.warn("file closed, can not add entry")
 
     def stop_recording(self):
-        print "Stop recording"
+        logger.debug("Stop recording")
         if(self.recording is True):
             txt = '''
     </trkseg>
@@ -277,6 +277,7 @@ class GPX():
             pass
 
 
+################################################################################################
 if __name__ == '__main__':
     gpslogger = GPSLoggerApp(sys.argv)
     logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
