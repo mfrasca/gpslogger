@@ -33,6 +33,14 @@ Page {
             rowname.anchors.right = current.horizontalCenter
             rowinterval.anchors.left = current.horizontalCenter
             rowinterval.anchors.top = separator.bottom
+            rowsamples.anchors.left = current.horizontalCenter
+            rowsamples.anchors.top = current.top
+            binterval.width = (width - 5*2 - 20) / 3
+            // tie them to the label to the left
+            txtfilename.anchors.right = undefined
+            lblrecording.anchors.right = undefined
+            txtfilename.anchors.left = lblfilename.right
+            lblrecording.anchors.left = lblfilename.right
             console.log("[QML INFO] Landscape")
         } else { // portrait
             rowaltitude.anchors.left = rowlongitude.left
@@ -40,6 +48,16 @@ Page {
             rowname.anchors.right = current.right
             rowinterval.anchors.left = current.left
             rowinterval.anchors.top = rowname.bottom
+            rowsamples.anchors.left = current.left
+            rowsamples.anchors.top = rowwaypoint.bottom
+            binterval.width = 2 * (width - 5*2 - 20) / 3 + 5
+            txtfilename.width = 2 * (width - 5*2 - 20) / 3 + 5
+            lblrecording.width = 2 * (width - 5*2 - 20) / 3 + 5
+            // tie them to the containing box
+            txtfilename.anchors.left = undefined
+            lblrecording.anchors.left = undefined
+            txtfilename.anchors.right = rowname.right
+            lblrecording.anchors.right = rowname.right
             console.log("[QML INFO] Portrait")
         }
     }
@@ -289,7 +307,9 @@ Page {
                     TextField {
                         id: txtfilename
                         height: 50
-                        width: parent.width - lblfilename.width - 20
+                        anchors {
+                            rightMargin: 20
+                        }
                     }
                     Text {
                         id: lblrecording
@@ -297,8 +317,10 @@ Page {
                         font.pixelSize: 22
                         verticalAlignment: Text.AlignVCenter
                         height: 50
-                        width: parent.width - lblfilename.width - 20
                         visible: false
+                        anchors {
+                            rightMargin: 20
+                        }
                     }
                 }
 
@@ -317,15 +339,23 @@ Page {
                         font.pixelSize: 22
                         verticalAlignment: Text.AlignVCenter
                         height: binterval.height
+                        anchors {
+                            left: parent.left
+                        }
                     }
                     Button {
                         id: binterval
                         text: dialoginterval.model.get(1).name;
                         font.bold: true;
                         font.pixelSize: 26
-                        width: parent.width - lblinterval.width - 20
+                        width: bstart.width
                         onClicked: {
                             dialoginterval.open();
+                        }
+                        anchors {
+                            left: undefined
+                            right: parent.right
+                            rightMargin: 20
                         }
                     }
 
@@ -344,7 +374,7 @@ Page {
                         text: "Start"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 5*2 - 6) / 3
+                        width: (parent.width - 5*2 - 20) / 3
                         onClicked: {
                             // console.log("start")
                             var r = qml_to_python.start(txtfilename.text, timerrecord.interval)
@@ -378,7 +408,7 @@ Page {
                         text: "Stop"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 5*2 - 6) / 3
+                        width: (parent.width - 5*2 - 20) / 3
                         enabled: false
                         onClicked: {
                             dialogstop.open();
@@ -392,7 +422,7 @@ Page {
                         text: "Pause"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 5*2 - 6) / 3
+                        width: (parent.width - 5*2 - 20) / 3
                         enabled: false
                         onClicked: {
                             if(bpause.text == "Pause") {
@@ -408,6 +438,7 @@ Page {
                 }
 
                 Row {
+                    id: rowwaypoint
                     width: parent.width
                     anchors {
                         top: buttons.bottom
@@ -418,7 +449,7 @@ Page {
                         text: "Add waypoint"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: parent.width -20
+                        width: parent.width - 20
                         enabled: false
                         onClicked: {
                             waypoint_no = waypoint_no + 1
@@ -433,6 +464,11 @@ Page {
                  }
 
                 Row {
+                    id: rowsamples
+                    anchors {
+                        top: rowwaypoint.bottom
+                        topMargin: 6
+                    }
                     width: parent.width
                     Text {
                         id: lblsamples
