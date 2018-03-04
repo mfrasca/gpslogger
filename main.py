@@ -149,9 +149,8 @@ class Configuration():
             pass
 
         try:
-            handle = open(self.configfile, 'w')
-            self.ConfigParser.write(handle)
-            handle.close()
+            with open(self.configfile, 'w') as handle:
+                self.ConfigParser.write(handle)
             print "Configuration saved"
         except:
             print "Failed to write configuration file!"
