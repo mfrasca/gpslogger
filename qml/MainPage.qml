@@ -44,6 +44,12 @@ Page {
             rowwaypoint_1.anchors.right = current.horizontalCenter
             rowwaypoint_2.anchors.left = current.horizontalCenter
             rowwaypoint_2.anchors.top = rowbuttons.bottom
+            bwpt_1.width = (parent.width - 50) / 6
+            bwpt_2.width = (parent.width - 50) / 6
+            bwpt_3.width = (parent.width - 50) / 6
+            bwpt_4.width = (parent.width - 50) / 6
+            bwpt_5.width = (parent.width - 50) / 6
+            bwpt_6.width = (parent.width - 50) / 6
             console.log("[QML INFO] Landscape")
         } else { // portrait
             rowaltitude.anchors.left = rowlongitude.left
@@ -65,6 +71,12 @@ Page {
             rowwaypoint_1.anchors.right = current.right
             rowwaypoint_2.anchors.left = current.left
             rowwaypoint_2.anchors.top = rowwaypoint_1.bottom
+            bwpt_1.width = (parent.width - 32) / 3
+            bwpt_2.width = (parent.width - 32) / 3
+            bwpt_3.width = (parent.width - 32) / 3
+            bwpt_4.width = (parent.width - 32) / 3
+            bwpt_5.width = (parent.width - 32) / 3
+            bwpt_6.width = (parent.width - 32) / 3
             console.log("[QML INFO] Portrait")
         }
     }
@@ -454,7 +466,7 @@ Page {
                         right: parent.horizontalCenter
                     }
                     Button {
-                        id: bwaypoint_1
+                        id: bwpt_1
                         text: "bridge"
                         font.bold: true;
                         font.pixelSize: 26
@@ -468,13 +480,13 @@ Page {
                          }
                      }
                     Button {
-                        id: bwaypoint_2
+                        id: bwpt_2
                         text: "ford"
                         font.bold: true;
                         font.pixelSize: 26
                         width: (parent.width - 32) / 3
                         anchors {
-                            left: bwaypoint_1.right
+                            left: bwpt_1.right
                             leftMargin: 6
                         }
                         onClicked: {
@@ -486,13 +498,13 @@ Page {
                          }
                      }
                     Button {
-                        id: bwaypoint_3
+                        id: bwpt_3
                         text: "culvert"
                         font.bold: true;
                         font.pixelSize: 26
                         width: (parent.width - 32) / 3
                         anchors {
-                            left: bwaypoint_2.right
+                            left: bwpt_2.right
                             leftMargin: 6
                         }
                         onClicked: {
@@ -515,7 +527,7 @@ Page {
                         right: parent.right
                     }
                     Button {
-                        id: bwaypoint_4
+                        id: bwpt_4
                         text: "school"
                         font.bold: true;
                         font.pixelSize: 26
@@ -529,13 +541,13 @@ Page {
                          }
                      }
                     Button {
-                        id: bwaypoint_5
+                        id: bwpt_5
                         text: "hospital"
                         font.bold: true;
                         font.pixelSize: 26
                         width: (parent.width - 32) / 3
                         anchors {
-                            left: bwaypoint_4.right
+                            left: bwpt_4.right
                             leftMargin: 6
                         }
                         onClicked: {
@@ -547,13 +559,13 @@ Page {
                          }
                      }
                     Button {
-                        id: bwaypoint_6
+                        id: bwpt_6
                         text: "0"
                         font.bold: true;
                         font.pixelSize: 26
                         width: (parent.width - 32) / 3
                         anchors {
-                            left: bwaypoint_5.right
+                            left: bwpt_5.right
                             leftMargin: 6
                         }
                         onClicked: {
