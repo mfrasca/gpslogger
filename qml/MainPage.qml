@@ -76,10 +76,10 @@ Page {
         if(bstart.enabled == false && bpause.text == "Pause") { //recording
             points = points + 1
             lblsamples.text = "recorded " + points + " samples"
-            qml_to_python.add_point(positionSource.position.coordinate.longitude,
-                                    positionSource.position.coordinate.latitude,
-                                    positionSource.position.coordinate.altitude,
-                                    positionSource.position.speed)
+            app.add_point(positionSource.position.coordinate.longitude,
+                          positionSource.position.coordinate.latitude,
+                          positionSource.position.coordinate.altitude,
+                          positionSource.position.speed)
 
             mapPage.add_point(positionSource.position.coordinate)
         }
@@ -377,7 +377,7 @@ Page {
                         width: (parent.width - 5*2 - 20) / 3
                         onClicked: {
                             // console.log("start")
-                            var r = qml_to_python.start(txtfilename.text, timerrecord.interval)
+                            var r = app.start(txtfilename.text, timerrecord.interval)
                             if(r != "") { //ok
                                 bstart.enabled = false
                                 bstop.enabled = true
@@ -426,10 +426,10 @@ Page {
                         enabled: false
                         onClicked: {
                             if(bpause.text == "Pause") {
-                                qml_to_python.pause()
+                                app.pause()
                                 bpause.text = "Resume"
                             } else {
-                                qml_to_python.resume()
+                                app.resume()
                                 bpause.text = "Pause"
                             }
                         }
@@ -445,20 +445,122 @@ Page {
                         topMargin: 6
                     }
                     Button {
-                        id: bwaypoint
-                        text: "Add waypoint"
+                        id: bwaypoint_1
+                        text: "wpt"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: parent.width - 20
+                        width: (parent.width - 20 - 30) / 6 
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                    }
                         enabled: false
                         onClicked: {
-                            waypoint_no = waypoint_no + 1
-                            bwaypoint.text = "Add waypoint (" + waypoint_no + ")"
-                            qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
-                                                       positionSource.position.coordinate.latitude,
-                                                       positionSource.position.coordinate.altitude,
-                                                       positionSource.position.speed,
-                                                       waypoint_no)
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                         }
+                     }
+                    Button {
+                        id: bwaypoint_2
+                        text: "wpt"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 20 - 30) / 6 
+                    anchors {
+                        left: bwaypoint_1.right
+                        leftMargin: 6
+                        top: parent.top
+                    }
+                        enabled: false
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                         }
+                     }
+                    Button {
+                        id: bwaypoint_3
+                        text: "wpt"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 20 - 30) / 6 
+                    anchors {
+                        left: bwaypoint_2.right
+                        leftMargin: 6
+                        top: parent.top
+                    }
+                        enabled: false
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                         }
+                     }
+                    Button {
+                        id: bwaypoint_4
+                        text: "wpt"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 20 - 30) / 6 
+                    anchors {
+                        left: bwaypoint_3.right
+                        leftMargin: 6
+                        top: bwaypoint_3.top
+                    }
+                        enabled: false
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                         }
+                     }
+                    Button {
+                        id: bwaypoint_5
+                        text: "wpt"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 20 - 30) / 6 
+                    anchors {
+                        left: bwaypoint_4.right
+                        leftMargin: 6
+                        top: bwaypoint_4.top
+                    }
+                        enabled: false
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                         }
+                     }
+                    Button {
+                        id: bwaypoint_6
+                        text: "wpt"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 20 - 30) / 6 
+                    anchors {
+                        left: bwaypoint_5.right
+                        leftMargin: 6
+                        top: bwaypoint_5.top
+                    }
+                        enabled: false
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
                          }
                      }
                  }
@@ -504,7 +606,7 @@ Page {
             binterval.enabled = true
             txtfilename.visible = true
             lblrecording.visible = false
-            qml_to_python.stop()
+            app.stop()
         }
     }
 
