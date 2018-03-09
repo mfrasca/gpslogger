@@ -495,8 +495,8 @@ Page {
                                              positionSource.position.coordinate.altitude,
                                              positionSource.position.speed,
                                              text)
-                         }
-                     }
+                        }
+                    }
                     Button {
                         id: bwpt_3
                         text: "culvert"
@@ -513,8 +513,8 @@ Page {
                                              positionSource.position.coordinate.altitude,
                                              positionSource.position.speed,
                                              text)
-                         }
-                     }
+                        }
+                    }
                 }
 
                 Row {
@@ -538,8 +538,8 @@ Page {
                                              positionSource.position.coordinate.altitude,
                                              positionSource.position.speed,
                                              text)
-                         }
-                     }
+                        }
+                    }
                     Button {
                         id: bwpt_5
                         text: "hospital"
@@ -556,8 +556,8 @@ Page {
                                              positionSource.position.coordinate.altitude,
                                              positionSource.position.speed,
                                              text)
-                         }
-                     }
+                        }
+                    }
                     Button {
                         id: bwpt_6
                         text: "0"
@@ -592,10 +592,8 @@ Page {
                         font.pixelSize: 22
                     }
                 }
-
             }
         }
-
     }
 
 
