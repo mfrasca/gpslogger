@@ -41,6 +41,9 @@ Page {
             lblrecording.anchors.right = undefined
             txtfilename.anchors.left = lblfilename.right
             lblrecording.anchors.left = lblfilename.right
+            rowwaypoint_1.anchors.right = current.horizontalCenter
+            rowwaypoint_2.anchors.left = current.horizontalCenter
+            rowwaypoint_2.anchors.top = rowbuttons.bottom
             console.log("[QML INFO] Landscape")
         } else { // portrait
             rowaltitude.anchors.left = rowlongitude.left
@@ -49,7 +52,7 @@ Page {
             rowinterval.anchors.left = current.left
             rowinterval.anchors.top = rowname.bottom
             rowsamples.anchors.left = current.left
-            rowsamples.anchors.top = rowwaypoint.bottom
+            rowsamples.anchors.top = rowwaypoint_2.bottom
             binterval.width = 2 * (width - 5*2 - 20) / 3 + 5
             txtfilename.width = 2 * (width - 5*2 - 20) / 3 + 5
             lblrecording.width = 2 * (width - 5*2 - 20) / 3 + 5
@@ -58,6 +61,10 @@ Page {
             lblrecording.anchors.left = undefined
             txtfilename.anchors.right = rowname.right
             lblrecording.anchors.right = rowname.right
+            // tie second half of waypoint buttons
+            rowwaypoint_1.anchors.right = current.right
+            rowwaypoint_2.anchors.left = current.left
+            rowwaypoint_2.anchors.top = rowwaypoint_1.bottom
             console.log("[QML INFO] Portrait")
         }
     }
@@ -362,7 +369,7 @@ Page {
                 }
 
                 Row {
-                    id:buttons
+                    id:rowbuttons
                     width: parent.width
 
                     anchors {
@@ -383,8 +390,8 @@ Page {
                                 bstop.enabled = true
                                 bpause.text = "Pause"
                                 bpause.enabled = true
-                                bwaypoint.enabled = true
-                                bwaypoint.text = "Add waypoint"
+                                rowwaypoint_1.enabled = true
+                                rowwaypoint_2.enabled = true
                                 txtfilename.enabled = false
                                 binterval.enabled = false
                                 txtfilename.visible = false
@@ -438,23 +445,20 @@ Page {
                 }
 
                 Row {
-                    id: rowwaypoint
-                    width: parent.width
+                    id: rowwaypoint_1
+                    enabled: false
                     anchors {
-                        top: buttons.bottom
+                        top: rowbuttons.bottom
                         topMargin: 6
+                        left: parent.left
+                        right: parent.horizontalCenter
                     }
                     Button {
                         id: bwaypoint_1
-                        text: "wpt"
+                        text: "bridge"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 20 - 30) / 6 
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                    }
-                        enabled: false
+                        width: (parent.width - 32) / 3
                         onClicked: {
                             app.add_waypoint(positionSource.position.coordinate.longitude,
 		                             positionSource.position.coordinate.latitude,
@@ -465,16 +469,14 @@ Page {
                      }
                     Button {
                         id: bwaypoint_2
-                        text: "wpt"
+                        text: "ford"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 20 - 30) / 6 
-                    anchors {
-                        left: bwaypoint_1.right
-                        leftMargin: 6
-                        top: parent.top
-                    }
-                        enabled: false
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwaypoint_1.right
+                            leftMargin: 6
+                        }
                         onClicked: {
                             app.add_waypoint(positionSource.position.coordinate.longitude,
 		                             positionSource.position.coordinate.latitude,
@@ -485,16 +487,14 @@ Page {
                      }
                     Button {
                         id: bwaypoint_3
-                        text: "wpt"
+                        text: "culvert"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 20 - 30) / 6 
-                    anchors {
-                        left: bwaypoint_2.right
-                        leftMargin: 6
-                        top: parent.top
-                    }
-                        enabled: false
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwaypoint_2.right
+                            leftMargin: 6
+                        }
                         onClicked: {
                             app.add_waypoint(positionSource.position.coordinate.longitude,
 		                             positionSource.position.coordinate.latitude,
@@ -503,18 +503,23 @@ Page {
                                              text)
                          }
                      }
+                }
+
+                Row {
+                    id: rowwaypoint_2
+                    enabled: false
+                    anchors {
+                        top: rowbuttons.bottom
+                        topMargin: 6
+                        left: parent.horizontalCenter
+                        right: parent.right
+                    }
                     Button {
                         id: bwaypoint_4
-                        text: "wpt"
+                        text: "school"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 20 - 30) / 6 
-                    anchors {
-                        left: bwaypoint_3.right
-                        leftMargin: 6
-                        top: bwaypoint_3.top
-                    }
-                        enabled: false
+                        width: (parent.width - 32) / 3
                         onClicked: {
                             app.add_waypoint(positionSource.position.coordinate.longitude,
 		                             positionSource.position.coordinate.latitude,
@@ -525,16 +530,14 @@ Page {
                      }
                     Button {
                         id: bwaypoint_5
-                        text: "wpt"
+                        text: "hospital"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 20 - 30) / 6 
-                    anchors {
-                        left: bwaypoint_4.right
-                        leftMargin: 6
-                        top: bwaypoint_4.top
-                    }
-                        enabled: false
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwaypoint_4.right
+                            leftMargin: 6
+                        }
                         onClicked: {
                             app.add_waypoint(positionSource.position.coordinate.longitude,
 		                             positionSource.position.coordinate.latitude,
@@ -545,17 +548,16 @@ Page {
                      }
                     Button {
                         id: bwaypoint_6
-                        text: "wpt"
+                        text: "0"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: (parent.width - 20 - 30) / 6 
-                    anchors {
-                        left: bwaypoint_5.right
-                        leftMargin: 6
-                        top: bwaypoint_5.top
-                    }
-                        enabled: false
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwaypoint_5.right
+                            leftMargin: 6
+                        }
                         onClicked: {
+                            text = (Number(text) + 1).toString()
                             app.add_waypoint(positionSource.position.coordinate.longitude,
 		                             positionSource.position.coordinate.latitude,
                                              positionSource.position.coordinate.altitude,
@@ -568,7 +570,7 @@ Page {
                 Row {
                     id: rowsamples
                     anchors {
-                        top: rowwaypoint.bottom
+                        top: rowwaypoint_2.bottom
                         topMargin: 6
                     }
                     width: parent.width
@@ -601,7 +603,8 @@ Page {
             bpause.enabled = false
             bpause.text = "Pause"
             bstop.enabled = false
-            bwaypoint.enabled = false
+            rowwaypoint_1.enabled = false
+            rowwaypoint_2.enabled = false
             txtfilename.enabled = true
             binterval.enabled = true
             txtfilename.visible = true

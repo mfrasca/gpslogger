@@ -31,7 +31,7 @@ PageStackWindow {
         id: about
         icon: "../img/icon_80.png"
         titleText: "GPS Logger"
-        message: "Version: " + qml_to_python.get_version() + "\n" +
+        message: "Version: " + app.get_version() + "\n" +
                  "Copyright 2012 by George Ruinelli\n"+
                  "Copyright 2018 by Mario Frasca\n"+
                  "Contact: george@ruinelli.ch\n"+
@@ -55,10 +55,10 @@ PageStackWindow {
         acceptButtonText: "YES"
         rejectButtonText: "Let me die..."
         onAccepted: {
-            qml_to_python.Opt_In(true)
+            app.Opt_In(true)
         }
         onRejected: {
-            qml_to_python.Opt_In(false)
+            app.Opt_In(false)
         }
     }
 }
