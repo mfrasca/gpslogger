@@ -259,7 +259,7 @@ class GPX():
     </trkseg>
   </trk>%s
 </gpx>
-    '''
+'''
             waypoint_format = '''
   <wpt lat="%(lat)s" lon="%(lon)s">
     <ele>%(ele)s</ele>
