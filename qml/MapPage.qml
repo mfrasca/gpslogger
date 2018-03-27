@@ -5,35 +5,40 @@ import QtMobility.location 1.1
 
 Page {
 
-  property double meter_per_pixel: 0
+    property double meter_per_pixel: 0
 
 
     function centermyposition() { // sets my position, but only once (do not update automatically)
-        var coord = Qt.createQmlObject('import QtMobility.location 1.1; Coordinate {latitude:' + positionSource.position.coordinate.latitude + ';longitude:' + positionSource.position.coordinate.longitude + ';}', positionSource, "coord");
+        var coord = Qt.createQmlObject('import QtMobility.location 1.1; ' +
+                                       'Coordinate {' +
+                                       '  latitude:' + positionSource.position.coordinate.latitude + ';' +
+                                       '  longitude:' + positionSource.position.coordinate.longitude + ';' +
+                                       '}',
+                                       positionSource, "coord");
         map.center = coord;
         myMapRoot.updateViewport()
-  }
+    }
 
-  function add_point(pos) {
-      polyline.addCoordinate(pos)
-      myMapRoot.updateViewport()
-  }
+    function add_point(pos) {
+        polyline.addCoordinate(pos)
+        myMapRoot.updateViewport()
+    }
 
-  function remove_all_point() {
-      while(polyline.path.length > 0) { // dirty workaround
-          console.log(polyline.path.length)
-          for (var index = 0; index < polyline.path.length; index++) {
-              polyline.removeCoordinate(polyline.path[0])
-          }
-          console.log("Polyline cleared", polyline.path.length)
-      }
-      myMapRoot.updateViewport()
-  }
+    function remove_all_point() {
+        while(polyline.path.length > 0) { // dirty workaround
+            console.log(polyline.path.length)
+            for (var index = 0; index < polyline.path.length; index++) {
+                polyline.removeCoordinate(polyline.path[0])
+            }
+            console.log("Polyline cleared", polyline.path.length)
+        }
+        myMapRoot.updateViewport()
+    }
 
-  function setmapplugin() {
-      map.plugin= mapplugin
-      centermyposition()
-  }
+    function setmapplugin() {
+        map.plugin= mapplugin
+        centermyposition()
+    }
 
 
     // *******************************************************
@@ -56,7 +61,7 @@ Page {
         }
         Plugin {
                   id: mapplugin
-                  name : "nokia"
+                  name: "nokia"
                   PluginParameter { name: "app_id"; value: "7FyznCdyZb5pU0pzECvK" } // https://api.developer.nokia.com/ovi-api/ui/registration?action=list
                   PluginParameter { name: "token"; value: "KVFpgX3oovrK7-VvV0g6OA" }
                 }
@@ -101,7 +106,7 @@ Page {
                 zoomLevel: 16
 
                 plugin: Plugin {
-                    name : "nokia"
+                    name: "nokia"
                 }
                 // center: positionSource.position.coordinate
 
@@ -178,27 +183,6 @@ Page {
                     prevY = contentY
                 }
             }
-            /*Button {
-                id: plus
-                text: "+"
-            }
-            Button {
-                id: minus
-                text: "-"
-                anchors.right: plus.left
-            }*/
-            /*MouseArea {
-                anchors.fill: plus
-                onClicked: {
-                    map.zoomLevel += 1
-                }
-            }
-            MouseArea {
-                anchors.fill: minus
-                onClicked: {
-                    map.zoomLevel -= 1
-                }
-            }*/
             Item {
                 id: pinpointViewContainer
                 Repeater {
@@ -218,7 +202,12 @@ Page {
     ToolBarLayout {
         id: toolbar
 
-        ToolIcon { iconId: "toolbar-back"; onClicked: { pageStack.pop();   } }
+        ToolIcon {
+            iconId: "toolbar-back"
+            onClicked: {
+                pageStack.pop()
+            }
+        }
 
         ToolButtonRow {
             ToolButton {

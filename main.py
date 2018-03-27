@@ -259,7 +259,7 @@ class GPX():
     </trkseg>
   </trk>%s
 </gpx>
-    '''
+'''
             waypoint_format = '''
   <wpt lat="%(lat)s" lon="%(lon)s">
     <ele>%(ele)s</ele>
@@ -284,7 +284,7 @@ if __name__ == '__main__':
 
     view = QDeclarativeView()
     context = view.rootContext()
-    context.setContextProperty("qml_to_python", gpslogger)
+    context.setContextProperty("app", gpslogger)
     view.setSource(QUrl.fromLocalFile(gpslogger.root + 'qml/main.qml'))
 
     if(platform.machine().startswith('arm')):

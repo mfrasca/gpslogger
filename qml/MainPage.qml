@@ -41,6 +41,15 @@ Page {
             lblrecording.anchors.right = undefined
             txtfilename.anchors.left = lblfilename.right
             lblrecording.anchors.left = lblfilename.right
+            rowwaypoint_1.anchors.right = current.horizontalCenter
+            rowwaypoint_2.anchors.left = current.horizontalCenter
+            rowwaypoint_2.anchors.top = rowbuttons.bottom
+            bwpt_1.width = (parent.width - 50) / 6
+            bwpt_2.width = (parent.width - 50) / 6
+            bwpt_3.width = (parent.width - 50) / 6
+            bwpt_4.width = (parent.width - 50) / 6
+            bwpt_5.width = (parent.width - 50) / 6
+            bwpt_6.width = (parent.width - 50) / 6
             console.log("[QML INFO] Landscape")
         } else { // portrait
             rowaltitude.anchors.left = rowlongitude.left
@@ -49,7 +58,7 @@ Page {
             rowinterval.anchors.left = current.left
             rowinterval.anchors.top = rowname.bottom
             rowsamples.anchors.left = current.left
-            rowsamples.anchors.top = rowwaypoint.bottom
+            rowsamples.anchors.top = rowwaypoint_2.bottom
             binterval.width = 2 * (width - 5*2 - 20) / 3 + 5
             txtfilename.width = 2 * (width - 5*2 - 20) / 3 + 5
             lblrecording.width = 2 * (width - 5*2 - 20) / 3 + 5
@@ -58,6 +67,16 @@ Page {
             lblrecording.anchors.left = undefined
             txtfilename.anchors.right = rowname.right
             lblrecording.anchors.right = rowname.right
+            // tie second half of waypoint buttons
+            rowwaypoint_1.anchors.right = current.right
+            rowwaypoint_2.anchors.left = current.left
+            rowwaypoint_2.anchors.top = rowwaypoint_1.bottom
+            bwpt_1.width = (parent.width - 32) / 3
+            bwpt_2.width = (parent.width - 32) / 3
+            bwpt_3.width = (parent.width - 32) / 3
+            bwpt_4.width = (parent.width - 32) / 3
+            bwpt_5.width = (parent.width - 32) / 3
+            bwpt_6.width = (parent.width - 32) / 3
             console.log("[QML INFO] Portrait")
         }
     }
@@ -76,10 +95,10 @@ Page {
         if(bstart.enabled == false && bpause.text == "Pause") { //recording
             points = points + 1
             lblsamples.text = "recorded " + points + " samples"
-            qml_to_python.add_point(positionSource.position.coordinate.longitude,
-                                    positionSource.position.coordinate.latitude,
-                                    positionSource.position.coordinate.altitude,
-                                    positionSource.position.speed)
+            app.add_point(positionSource.position.coordinate.longitude,
+                          positionSource.position.coordinate.latitude,
+                          positionSource.position.coordinate.altitude,
+                          positionSource.position.speed)
 
             mapPage.add_point(positionSource.position.coordinate)
         }
@@ -362,7 +381,7 @@ Page {
                 }
 
                 Row {
-                    id:buttons
+                    id:rowbuttons
                     width: parent.width
 
                     anchors {
@@ -377,14 +396,14 @@ Page {
                         width: (parent.width - 5*2 - 20) / 3
                         onClicked: {
                             // console.log("start")
-                            var r = qml_to_python.start(txtfilename.text, timerrecord.interval)
+                            var r = app.start(txtfilename.text, timerrecord.interval)
                             if(r != "") { //ok
                                 bstart.enabled = false
                                 bstop.enabled = true
                                 bpause.text = "Pause"
                                 bpause.enabled = true
-                                bwaypoint.enabled = true
-                                bwaypoint.text = "Add waypoint"
+                                rowwaypoint_1.enabled = true
+                                rowwaypoint_2.enabled = true
                                 txtfilename.enabled = false
                                 binterval.enabled = false
                                 txtfilename.visible = false
@@ -426,10 +445,10 @@ Page {
                         enabled: false
                         onClicked: {
                             if(bpause.text == "Pause") {
-                                qml_to_python.pause()
+                                app.pause()
                                 bpause.text = "Resume"
                             } else {
-                                qml_to_python.resume()
+                                app.resume()
                                 bpause.text = "Pause"
                             }
                         }
@@ -438,27 +457,124 @@ Page {
                 }
 
                 Row {
-                    id: rowwaypoint
-                    width: parent.width
+                    id: rowwaypoint_1
+                    enabled: false
                     anchors {
-                        top: buttons.bottom
+                        top: rowbuttons.bottom
                         topMargin: 6
+                        left: parent.left
+                        right: parent.horizontalCenter
                     }
                     Button {
-                        id: bwaypoint
-                        text: "Add waypoint"
+                        id: bwpt_1
+                        text: "bridge"
                         font.bold: true;
                         font.pixelSize: 26
-                        width: parent.width - 20
-                        enabled: false
+                        width: (parent.width - 32) / 3
                         onClicked: {
-                            waypoint_no = waypoint_no + 1
-                            bwaypoint.text = "Add waypoint (" + waypoint_no + ")"
-                            qml_to_python.add_waypoint(positionSource.position.coordinate.longitude,
-                                                       positionSource.position.coordinate.latitude,
-                                                       positionSource.position.coordinate.altitude,
-                                                       positionSource.position.speed,
-                                                       waypoint_no)
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                         }
+                     }
+                    Button {
+                        id: bwpt_2
+                        text: "ford"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwpt_1.right
+                            leftMargin: 6
+                        }
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                        }
+                    }
+                    Button {
+                        id: bwpt_3
+                        text: "culvert"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwpt_2.right
+                            leftMargin: 6
+                        }
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                        }
+                    }
+                }
+
+                Row {
+                    id: rowwaypoint_2
+                    enabled: false
+                    anchors {
+                        top: rowbuttons.bottom
+                        topMargin: 6
+                        left: parent.horizontalCenter
+                        right: parent.right
+                    }
+                    Button {
+                        id: bwpt_4
+                        text: "school"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 32) / 3
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                        }
+                    }
+                    Button {
+                        id: bwpt_5
+                        text: "hospital"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwpt_4.right
+                            leftMargin: 6
+                        }
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                        }
+                    }
+                    Button {
+                        id: bwpt_6
+                        text: "0"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            left: bwpt_5.right
+                            leftMargin: 6
+                        }
+                        onClicked: {
+                            text = (Number(text) + 1).toString()
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
                          }
                      }
                  }
@@ -466,7 +582,7 @@ Page {
                 Row {
                     id: rowsamples
                     anchors {
-                        top: rowwaypoint.bottom
+                        top: rowwaypoint_2.bottom
                         topMargin: 6
                     }
                     width: parent.width
@@ -476,10 +592,8 @@ Page {
                         font.pixelSize: 22
                     }
                 }
-
             }
         }
-
     }
 
 
@@ -499,12 +613,13 @@ Page {
             bpause.enabled = false
             bpause.text = "Pause"
             bstop.enabled = false
-            bwaypoint.enabled = false
+            rowwaypoint_1.enabled = false
+            rowwaypoint_2.enabled = false
             txtfilename.enabled = true
             binterval.enabled = true
             txtfilename.visible = true
             lblrecording.visible = false
-            qml_to_python.stop()
+            app.stop()
         }
     }
 
