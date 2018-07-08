@@ -1,10 +1,10 @@
 #!/usr/bin/python
-##############################################################################################
+################################################################################
 # Copyright (c) by George Ruinelli (2012)
 # License:     GPL3
 # Modified by Hiroshi Miura, 2013
 # Modified by Mario Frasca, 2018
-##############################################################################################
+################################################################################
 
 
 import sys
@@ -28,7 +28,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-################################################################################################
+################################################################################
 class GPSLoggerApp(QApplication):
     root = "/opt/gps-logger/"
     filehandle = None
@@ -113,7 +113,7 @@ class GPSLoggerApp(QApplication):
             quit()
 
 
-####################################################################################################
+################################################################################
 class Configuration():
     configpath = ""
     configfile = "config.conf"
@@ -157,7 +157,7 @@ class Configuration():
             logger.error("Failed to write configuration file!")
 
 
-################################################################################################
+################################################################################
 class GPX():
     filehandle = None
     recording = False
@@ -237,7 +237,7 @@ class GPX():
             txt = '''
       <trkpt lat="%(lat)s" lon="%(lon)s">
         <ele>%(ele)s</ele>
-        <time>%(ele)s</time>
+        <time>%(time)s</time>
         <desc>Lat.=%(lat)s, Long.=%(lon)s, Alt.=%(ele)sm, Speed=%(speed)sKm/h</desc>
       </trkpt>''' % {'lat': lat, 'lon': lon, 'ele': alt, 'time': t, 'speed': s}
 
@@ -277,7 +277,7 @@ class GPX():
             pass
 
 
-################################################################################################
+################################################################################
 if __name__ == '__main__':
     gpslogger = GPSLoggerApp(sys.argv)
     logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
