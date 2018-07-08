@@ -8,10 +8,10 @@ import "." as MyComponents
 Page {
     id: mainPage
 
-    // The layout here is for portrait, there are settings we need to change
-    // for landscape.  We react on display orientation changes, that's the
-    // signal "onWidthChanged".  To make sure this is called at start up, we
-    // use a single shot timer, after 1ms.
+    // We here define the portrait layout.  `displayOrientationChanged`
+    // handles the switch to landscape or back to portrait.  We activate it
+    // `onWidthChanged` and we make sure it is also called at start up, with
+    // a single shot `Timer`, after 1ms.
 
     onWidthChanged: {
         displayOrientationChanged()
@@ -42,7 +42,6 @@ Page {
             txtfilename.anchors.left = lblfilename.right
             lblrecording.anchors.left = lblfilename.right
             rowwaypoint_1.anchors.right = current.horizontalCenter
-            rowwaypoint_2.anchors.left = current.horizontalCenter
             rowwaypoint_2.anchors.top = rowbuttons.bottom
             bwpt_1.width = (parent.width - 50) / 6
             bwpt_2.width = (parent.width - 50) / 6
@@ -69,7 +68,6 @@ Page {
             lblrecording.anchors.right = rowname.right
             // tie second half of waypoint buttons
             rowwaypoint_1.anchors.right = current.right
-            rowwaypoint_2.anchors.left = current.left
             rowwaypoint_2.anchors.top = rowwaypoint_1.bottom
             bwpt_1.width = (parent.width - 32) / 3
             bwpt_2.width = (parent.width - 32) / 3
@@ -523,40 +521,7 @@ Page {
                     anchors {
                         top: rowbuttons.bottom
                         topMargin: 6
-                        left: parent.horizontalCenter
                         right: parent.right
-                    }
-                    Button {
-                        id: bwpt_4
-                        text: "school"
-                        font.bold: true;
-                        font.pixelSize: 26
-                        width: (parent.width - 32) / 3
-                        onClicked: {
-                            app.add_waypoint(positionSource.position.coordinate.longitude,
-		                             positionSource.position.coordinate.latitude,
-                                             positionSource.position.coordinate.altitude,
-                                             positionSource.position.speed,
-                                             text)
-                        }
-                    }
-                    Button {
-                        id: bwpt_5
-                        text: "hospital"
-                        font.bold: true;
-                        font.pixelSize: 26
-                        width: (parent.width - 32) / 3
-                        anchors {
-                            left: bwpt_4.right
-                            leftMargin: 6
-                        }
-                        onClicked: {
-                            app.add_waypoint(positionSource.position.coordinate.longitude,
-		                             positionSource.position.coordinate.latitude,
-                                             positionSource.position.coordinate.altitude,
-                                             positionSource.position.speed,
-                                             text)
-                        }
                     }
                     Button {
                         id: bwpt_6
@@ -565,8 +530,8 @@ Page {
                         font.pixelSize: 26
                         width: (parent.width - 32) / 3
                         anchors {
-                            left: bwpt_5.right
-                            leftMargin: 6
+                            right: parent.right
+                            rightMargin: 20
                         }
                         onClicked: {
                             text = (Number(text) + 1).toString()
@@ -577,6 +542,42 @@ Page {
                                              text)
                          }
                      }
+                    Button {
+                        id: bwpt_5
+                        text: "hospital"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            right: bwpt_6.left
+                            rightMargin: 6
+                        }
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                        }
+                    }
+                    Button {
+                        id: bwpt_4
+                        text: "school"
+                        font.bold: true;
+                        font.pixelSize: 26
+                        width: (parent.width - 32) / 3
+                        anchors {
+                            right: bwpt_5.left
+                            rightMargin: 6
+                        }
+                        onClicked: {
+                            app.add_waypoint(positionSource.position.coordinate.longitude,
+		                             positionSource.position.coordinate.latitude,
+                                             positionSource.position.coordinate.altitude,
+                                             positionSource.position.speed,
+                                             text)
+                        }
+                    }
                  }
 
                 Row {
