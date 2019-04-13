@@ -149,7 +149,9 @@ Page {
                 } // my GPS gives a valid altitude every two readings.
 
                 if(positionSource.position.speedValid) {
-                    lblspeed.text = Math.round(positionSource.position.speed * 100) / 100 + " m/s (" +  Math.round(positionSource.position.speed * 360) / 100 + " km/h)"
+                    lblbigspeed.text = Math.round(positionSource.position.speed * 3.60)
+                    lblspeedmps.text = Math.round(positionSource.position.speed * 100) / 100
+                    lblspeedkmph.text = Math.round(positionSource.position.speed * 360) / 100
                 } else {
                     lblalt.text = "[2D fix]"
                     lblspeed.text = ""
@@ -288,9 +290,37 @@ Page {
                         font.pixelSize: 22
                     }
                     Text {
-                        id: lblspeed
-                        // text: positionSource.position.speed
+                        id: lblspeedmps
+                        // font.family: "Courier New"
                         font.pixelSize: 22
+                    }
+                    Text {
+                        text: "m/s  "
+                        font.pixelSize: 22
+                    }
+                    Text {
+                        id: lblspeedkmph
+                        // font.family: "Courier New"
+                        font.pixelSize: 22
+                    }
+                    Text {
+                        text: "km/h"
+                        font.pixelSize: 22
+                    }
+                }
+
+                Row {
+                    id: rowbigspeed
+                    anchors {
+                        right: parent.right
+                        rightMargin: 20
+                        bottom: rowspeed.bottom
+                        bottomMargin: 0
+                    }
+                    Text {
+                        id: lblbigspeed
+                        font.pixelSize: 80
+                        font.family: "Courier New"
                     }
                 }
 
@@ -660,22 +690,6 @@ Page {
             ToolButton {
                 id: bshowmap
                 text: "Show map"
-                onClicked: {
-                    // MyComponents.MapPage.id = "mapPage"
-                    pageStack.push(mapPage)
-                    mapPage.setmapplugin()
-                    mapPage.centermyposition()
-                    // pageStack.push(Qt.resolvedUrl("MapPage.qml"))
-
-                    // var coord = Qt.createQmlObject()
-
-                    // pageLoader.source = "MapPage.qml"
-                    // pageStack.push(pageLoader)
-
-                    // mapPage = Qt.createComponent("MapPage.qml");
-                    // pageStack.push(mapPage)
-
-                }
             }
         }
 
